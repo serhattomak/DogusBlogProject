@@ -1,4 +1,5 @@
-﻿using DogusProject.Application.Common;
+﻿using AutoMapper;
+using DogusProject.Application.Common;
 using DogusProject.Application.Features.Comments.Commands;
 using DogusProject.Domain.Entities;
 using DogusProject.Domain.Interfaces;
@@ -9,21 +10,18 @@ namespace DogusProject.Application.Features.Comments.Handlers;
 public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand, Result<Guid>>
 {
 	private readonly ICommentRepository _repository;
+	private readonly IMapper _mapper;
 
-	public CreateCommentCommandHandler(ICommentRepository repository)
+	public CreateCommentCommandHandler(ICommentRepository repository, IMapper mapper)
 	{
 		_repository = repository;
+		_mapper = mapper;
 	}
 
 	public async Task<Result<Guid>> Handle(CreateCommentCommand request, CancellationToken cancellationToken)
 	{
-		var comment = new Comment
-		{
-			BlogId = request.BlogId,
-			UserId = request.UserId,
-			Content = request.Content,
-			CreatedAt = DateTime.UtcNow
-		};
+		var comment = _mapper.Map<Comment>(request);
+		comment.CreatedAt = DateTime.UtcNow;
 
 		await _repository.AddAsync(comment);
 		await _repository.SaveChangesAsync();

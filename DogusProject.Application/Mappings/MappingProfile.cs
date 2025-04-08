@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DogusProject.Application.Features.Blogs.Dtos;
 using DogusProject.Application.Features.Categories.Dtos;
+using DogusProject.Application.Features.Comments.Commands;
 using DogusProject.Application.Features.Comments.Dtos;
 using DogusProject.Application.Features.Tags.Dtos;
 using DogusProject.Domain.Entities;
@@ -28,6 +29,7 @@ public class MappingProfile : Profile
 		CreateMap<Tag, TagDto>().ReverseMap();
 
 
+		CreateMap<CreateCommentCommand, Comment>();
 		CreateMap<Comment, CommentDto>();
 	}
 }
