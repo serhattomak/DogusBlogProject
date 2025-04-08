@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35913.81 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DogusProject.Domain", "DogusProject.Domain\DogusProject.Domain.csproj", "{2E1BEB20-B960-407A-8FA0-218EE2484DC4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DogusProject.Application", "DogusProject.Application\DogusProject.Application.csproj", "{53C26F23-422D-4951-AEA3-C4E0605D4346}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DogusProject.Persistence", "DogusProject.Persistence\DogusProject.Persistence.csproj", "{01988490-7E5A-4831-A27A-8C57C3582A8E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DogusProject.Infrastructure", "DogusProject.Infrastructure\DogusProject.Infrastructure.csproj", "{213CD0E0-1395-48FA-A643-4A1E36B78867}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DogusProject.API", "DogusProject.API\DogusProject.API.csproj", "{FBF7915C-CFFB-4162-94A0-D0FE9E94C808}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DogusProject.Web", "DogusProject.Web\DogusProject.Web.csproj", "{F2375D7D-819A-4BAA-A628-971F1235EBA3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2E1BEB20-B960-407A-8FA0-218EE2484DC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E1BEB20-B960-407A-8FA0-218EE2484DC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E1BEB20-B960-407A-8FA0-218EE2484DC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E1BEB20-B960-407A-8FA0-218EE2484DC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53C26F23-422D-4951-AEA3-C4E0605D4346}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53C26F23-422D-4951-AEA3-C4E0605D4346}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53C26F23-422D-4951-AEA3-C4E0605D4346}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53C26F23-422D-4951-AEA3-C4E0605D4346}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01988490-7E5A-4831-A27A-8C57C3582A8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01988490-7E5A-4831-A27A-8C57C3582A8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01988490-7E5A-4831-A27A-8C57C3582A8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01988490-7E5A-4831-A27A-8C57C3582A8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{213CD0E0-1395-48FA-A643-4A1E36B78867}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{213CD0E0-1395-48FA-A643-4A1E36B78867}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{213CD0E0-1395-48FA-A643-4A1E36B78867}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{213CD0E0-1395-48FA-A643-4A1E36B78867}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBF7915C-CFFB-4162-94A0-D0FE9E94C808}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBF7915C-CFFB-4162-94A0-D0FE9E94C808}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBF7915C-CFFB-4162-94A0-D0FE9E94C808}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBF7915C-CFFB-4162-94A0-D0FE9E94C808}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2375D7D-819A-4BAA-A628-971F1235EBA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2375D7D-819A-4BAA-A628-971F1235EBA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2375D7D-819A-4BAA-A628-971F1235EBA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2375D7D-819A-4BAA-A628-971F1235EBA3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FD26859C-DD77-4E00-A9CC-3D0C25F2278B}
+	EndGlobalSection
+EndGlobal

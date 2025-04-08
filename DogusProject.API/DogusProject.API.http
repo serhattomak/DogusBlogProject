@@ -1,0 +1,6 @@
+@DogusProject.API_HostAddress = http://localhost:5277
+
+GET {{DogusProject.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
