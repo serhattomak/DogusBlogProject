@@ -6,5 +6,5 @@ public class Category : BaseEntity
 {
 	public string Name { get; set; } = null!;
 
-	public ICollection<Blog> Blogs { get; set; }
+	public ICollection<Blog> Blogs { get; set; } = new List<Blog>();
 }

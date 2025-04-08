@@ -16,6 +16,6 @@ public class Blog : BaseEntity
 
 
 	public Category Category { get; set; }
-	public ICollection<Comment> Comments { get; set; }
-	public ICollection<BlogTag> BlogTags { get; set; }
+	public ICollection<Comment> Comments { get; set; } = new List<Comment>();
+	public ICollection<BlogTag> BlogTags { get; set; } = new List<BlogTag>();
 }

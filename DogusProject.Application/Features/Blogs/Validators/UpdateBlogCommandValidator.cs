@@ -10,7 +10,8 @@ public class UpdateBlogCommandValidator : AbstractValidator<UpdateBlogCommand>
 		RuleFor(x => x.Blog.Id).NotEmpty().WithMessage("Blog ID cannot be null.");
 		RuleFor(x => x.Blog.Title)
 			.NotEmpty().WithMessage("Title is required.")
-			.MinimumLength(3).WithMessage("Title must be at least 3 characters.");
+			.MinimumLength(3).WithMessage("Title must be at least 3 characters.")
+			.MaximumLength(150).WithMessage("Title must not exceed 150 characters.");
 
 		RuleFor(x => x.Blog.Content)
 			.NotEmpty().WithMessage("Content is required.")

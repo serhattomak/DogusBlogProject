@@ -1,4 +1,5 @@
-﻿using DogusProject.Application.Common;
+﻿using AutoMapper;
+using DogusProject.Application.Common;
 using DogusProject.Application.Features.Blogs.Commands;
 using DogusProject.Domain.Entities;
 using DogusProject.Domain.Interfaces;
@@ -9,10 +10,12 @@ namespace DogusProject.Application.Features.Blogs.Handlers;
 public class UpdateBlogCommandHandler : IRequestHandler<UpdateBlogCommand, Result>
 {
 	private readonly IBlogRepository _repository;
+	private readonly IMapper _mapper;
 
-	public UpdateBlogCommandHandler(IBlogRepository repository)
+	public UpdateBlogCommandHandler(IBlogRepository repository, IMapper mapper)
 	{
 		_repository = repository;
+		_mapper = mapper;
 	}
 
 	public async Task<Result> Handle(UpdateBlogCommand request, CancellationToken cancellationToken)
@@ -24,10 +27,7 @@ public class UpdateBlogCommandHandler : IRequestHandler<UpdateBlogCommand, Resul
 		if (blog.UserId != request.UserId)
 			return Result.FailureResult("You can only update your own blog.");
 
-		blog.Title = request.Blog.Title;
-		blog.Content = request.Blog.Content;
-		blog.CategoryId = request.Blog.CategoryId;
-		blog.ImagePath = request.Blog.ImagePath;
+		_mapper.Map(request.Blog, blog);
 		blog.UpdatedAt = DateTime.UtcNow;
 
 		blog.BlogTags.Clear();

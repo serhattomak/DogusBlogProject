@@ -20,6 +20,46 @@ namespace DogusProject.API.Controllers
 			_mediator = mediator;
 		}
 
+		[HttpGet("all")]
+		[AllowAnonymous]
+		public async Task<IActionResult> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+		{
+			var result = await _mediator.Send(new GetAllBlogsQuery { Page = page, PageSize = pageSize });
+			return result.Success ? Ok(result) : BadRequest(result);
+		}
+
+		[HttpGet("{id}")]
+		[AllowAnonymous]
+		public async Task<IActionResult> GetById(Guid id)
+		{
+			var result = await _mediator.Send(new GetBlogByIdQuery(id));
+			return result.Success ? Ok(result) : NotFound(result);
+		}
+
+		[HttpGet("by-category/{categoryId}")]
+		[AllowAnonymous]
+		public async Task<IActionResult> GetByCategory(Guid categoryId, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+		{
+			var result = await _mediator.Send(new GetBlogsByCategoryIdQuery(categoryId, page, pageSize));
+			return result.Success ? Ok(result) : BadRequest(result);
+		}
+
+		[HttpGet("by-tag/{tagId}")]
+		[AllowAnonymous]
+		public async Task<IActionResult> GetByTag(Guid tagId, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+		{
+			var result = await _mediator.Send(new GetBlogsByTagIdQuery(tagId, page, pageSize));
+			return result.Success ? Ok(result) : BadRequest(result);
+		}
+
+		[HttpGet("by-author/{userId}")]
+		[AllowAnonymous]
+		public async Task<IActionResult> GetByAuthor(Guid userId, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+		{
+			var result = await _mediator.Send(new GetBlogsByAuthorIdQuery(userId, page, pageSize));
+			return result.Success ? Ok(result) : BadRequest(result);
+		}
+
 		[HttpPost("create")]
 		[Authorize(Roles = "Author, Admin")]
 		public async Task<IActionResult> Create([FromBody] CreateBlogDto request)
@@ -32,22 +72,6 @@ namespace DogusProject.API.Controllers
 			var result = await _mediator.Send(command);
 
 			return result.Success ? Ok(result) : BadRequest(result);
-		}
-
-		[HttpGet]
-		[AllowAnonymous]
-		public async Task<IActionResult> GetAll()
-		{
-			var result = await _mediator.Send(new GetAllBlogsQuery());
-			return Ok(result);
-		}
-
-		[HttpGet("{id}")]
-		[AllowAnonymous]
-		public async Task<IActionResult> GetById(Guid id)
-		{
-			var result = await _mediator.Send(new GetBlogByIdQuery(id));
-			return result.Success ? Ok(result) : NotFound(result);
 		}
 
 		[HttpPut]

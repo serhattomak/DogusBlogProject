@@ -21,16 +21,11 @@ public class CreateBlogCommandHandler : IRequestHandler<CreateBlogCommand, Resul
 
 	public async Task<Result<Guid>> Handle(CreateBlogCommand request, CancellationToken cancellationToken)
 	{
-		var blog = new Blog
-		{
-			Title = request.Blog.Title,
-			Content = request.Blog.Content,
-			CategoryId = request.Blog.CategoryId,
-			ImagePath = request.Blog.ImagePath,
-			UserId = request.UserId,
-			Status = BlogStatus.Draft,
-			CreatedAt = DateTime.UtcNow
-		};
+		var blog = _mapper.Map<Blog>(request.Blog);
+		blog.Status = BlogStatus.Published;
+		blog.CreatedAt = DateTime.UtcNow;
+		blog.PublishedAt = DateTime.UtcNow;
+		blog.UserId = request.UserId;
 
 		if (request.Blog.TagIds is not null && request.Blog.TagIds.Any())
 		{

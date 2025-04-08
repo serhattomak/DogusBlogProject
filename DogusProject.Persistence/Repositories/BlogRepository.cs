@@ -14,6 +14,11 @@ public class BlogRepository(AppIdentityDbContext context) : EfRepository<Blog>(c
 		await _context.Blogs.AddAsync(entity);
 		await _context.SaveChangesAsync();
 	}
+	public void Update(Blog entity)
+	{
+		_context.Blogs.Update(entity);
+		_context.SaveChanges();
+	}
 
 	public void Delete(Blog entity)
 	{
@@ -49,9 +54,31 @@ public class BlogRepository(AppIdentityDbContext context) : EfRepository<Blog>(c
 			.FirstOrDefaultAsync(b => b.Id == id);
 	}
 
-	public void Update(Blog entity)
+	public async Task<List<Blog>> GetBlogsByCategoryIdAsync(Guid categoryId)
 	{
-		_context.Blogs.Update(entity);
-		_context.SaveChanges();
+		return await _context.Blogs
+			.Include(b => b.Category)
+			.Include(b => b.UserId)
+			.Where(b => b.CategoryId == categoryId)
+			.ToListAsync();
+	}
+
+	public async Task<List<Blog>> GetBlogsByTagIdAsync(Guid tagId)
+	{
+		return await _context.Blogs
+			.Include(b => b.Category)
+			.Include(b => b.UserId)
+			.Include(b => b.BlogTags).ThenInclude(bt => bt.Tag)
+			.Where(b => b.BlogTags.Any(bt => bt.TagId == tagId))
+			.ToListAsync();
+	}
+
+	public async Task<List<Blog>> GetBlogsByAuthorIdAsync(Guid userId)
+	{
+		return await _context.Blogs
+			.Include(b => b.Category)
+			.Include(b => b.UserId)
+			.Where(b => b.UserId == userId)
+			.ToListAsync();
 	}
 }
