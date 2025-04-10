@@ -51,9 +51,9 @@ namespace DogusProject.API.Controllers
 		}
 
 		[HttpPost("changePassword")]
-		public async Task<ActionResult> ChangePassword(Guid userId, string password, string newPassword)
+		public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordRequestDto dto)
 		{
-			await _authService.ChangePasswordAsync(userId, password, newPassword);
+			await _authService.ChangePasswordAsync(dto.UserId, dto.CurrentPassword, dto.NewPassword);
 			return Ok(Result.SuccessResult("Password changed successfully."));
 		}
 
@@ -99,5 +99,18 @@ namespace DogusProject.API.Controllers
 			return result.Success ? Ok(result) : BadRequest(result);
 		}
 
+		[HttpGet("user")]
+		public async Task<IActionResult> GetUserByEmail([FromQuery] string email)
+		{
+			var result = await _authService.GetUserByEmail(email);
+			return result.Success ? Ok(result) : BadRequest(result);
+		}
+
+		[HttpGet("user/{userId}")]
+		public async Task<IActionResult> GetUserById(Guid userId)
+		{
+			var result = await _authService.GetUserByIdAsync(userId);
+			return result.Success ? Ok(result) : BadRequest(result);
+		}
 	}
 }

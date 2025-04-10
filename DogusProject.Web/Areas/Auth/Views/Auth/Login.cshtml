@@ -1,0 +1,36 @@
+﻿@model DogusProject.Web.Models.Auth.DTOs.LoginRequestDto
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4>Giriş Yap</h4>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <div>@error.ErrorMessage</div>
+        }
+    </div>
+}
+
+<form asp-area="Auth" asp-controller="Auth" asp-action="Login" method="post">
+    <div class="mb-3">
+        <label asp-for="Email">Email</label>
+        <input asp-for="Email" class="form-control" type="text" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Password">Şifre</label>
+        <input asp-for="Password" class="form-control" type="password" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Giriş Yap</button>
+</form>
+
+@section Scripts {
+    <partial name="~/Views/Shared/_ValidationScriptsPartial.cshtml" />
+}

@@ -7,7 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.15" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.15" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\DogusProject.Application\DogusProject.Application.csproj" />
+    <ProjectReference Include="..\DogusProject.Domain\DogusProject.Domain.csproj" />
+    <ProjectReference Include="..\DogusProject.Infrastructure\DogusProject.Infrastructure.csproj" />
+    <ProjectReference Include="..\DogusProject.Persistence\DogusProject.Persistence.csproj" />
   </ItemGroup>
 
 </Project>

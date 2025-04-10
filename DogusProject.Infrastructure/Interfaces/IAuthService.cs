@@ -18,5 +18,6 @@ public interface IAuthService
 	Task<Result<List<string>>> GetAllRolesAsync();
 	Task<Result<UserInfoDto>> GetUserByIdAsync(Guid userId);
 	Task<Result<PagedResult<UserListItemDto>>> GetUsersAsync(UserListRequestDto request);
+	Task<Result<UserInfoDto>> GetUserByEmail(string email);
 	string CreateToken(AppUser user, IList<string> roles);
 }

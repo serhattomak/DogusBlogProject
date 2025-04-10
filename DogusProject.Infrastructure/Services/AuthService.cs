@@ -73,6 +73,7 @@ public class AuthService : IAuthService
 		var response = new AuthResponseDto
 		{
 			Token = CreateToken(user, roles),
+			UserId = user.Id,
 			UserName = user.UserName,
 			Roles = roles.ToList()
 		};
@@ -83,6 +84,8 @@ public class AuthService : IAuthService
 
 	public async Task<Result<string>> UpdateUserInfoAsync(UpdateUserInfoDto dto)
 	{
+		if (dto.UserId == Guid.Empty.ToString())
+			return Result<string>.FailureResult("UserId is missing.");
 		var user = await _userManager.FindByIdAsync(dto.UserId);
 		if (user == null)
 			return Result<string>.FailureResult("User not found.");
@@ -209,6 +212,22 @@ public class AuthService : IAuthService
 		}).ToList();
 
 		return Result<PagedResult<UserListItemDto>>.SuccessResult(new PagedResult<UserListItemDto>(dtos, totalCount, request.Page, request.PageSize));
+	}
+
+	public async Task<Result<UserInfoDto>> GetUserByEmail(string email)
+	{
+		if (string.IsNullOrWhiteSpace(email))
+			return Result<UserInfoDto>.FailureResult("Email cannot be null or empty.");
+		var user = await _userManager.FindByEmailAsync(email);
+		if (user == null)
+			return Result<UserInfoDto>.FailureResult("User not found.");
+		var dto = new UserInfoDto
+		{
+			Id = user.Id,
+			UserName = user.UserName,
+			Email = user.Email
+		};
+		return Result<UserInfoDto>.SuccessResult(dto);
 	}
 
 	public string CreateToken(AppUser user, IList<string> roles)

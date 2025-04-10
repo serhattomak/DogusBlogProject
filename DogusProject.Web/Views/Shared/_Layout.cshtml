@@ -1,49 +1,70 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - DogusProject.Web</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/DogusProject.Web.styles.css" asp-append-version="true" />
+    <title>@ViewData["Title"] - Dogus Blog</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">DogusProject.Web</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm mb-3">
     <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - DogusProject.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Index">Dogus Blog</a>
+        <div class="d-flex">
+            @if (HttpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false)
+            {
+                <div class="me-2">Hoş geldin, @User.Identity.Name</div>
+                <form method="post" asp-area="Auth" asp-controller="Auth" asp-action="Logout">
+                    <button type="submit" class="btn btn-outline-secondary btn-sm">Çıkış</button>
+                </form>
+            }
+            else
+            {
+                <a asp-area="Auth" asp-controller="Auth" asp-action="Login" class="btn btn-outline-primary btn-sm me-2">Giriş</a>
+                <a asp-area="Auth" asp-controller="Auth" asp-action="Register" class="btn btn-primary btn-sm">Kayıt Ol</a>
+            }
         </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <!-- Sol Sidebar -->
+        <div class="col-md-3">
+            <div class="mb-4">
+                <h5>Kategoriler</h5>
+                <ul class="list-group">
+                    <li class="list-group-item">Teknoloji</li>
+                    <li class="list-group-item">Bilim</li>
+                    <li class="list-group-item">Seyahat</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Orta Ana İçerik -->
+        <div class="col-md-6">
+            @RenderBody()
+        </div>
+
+        <!-- Sağ Sidebar -->
+        <div class="col-md-3">
+            <div class="mb-4">
+                <h5>Etiketler</h5>
+                <span class="badge bg-secondary me-1 mb-1">#uzay</span>
+                <span class="badge bg-secondary me-1 mb-1">#gezi</span>
+                <span class="badge bg-secondary me-1 mb-1">#yazılım</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@RenderSection("Scripts", required: false)
 </body>
 </html>

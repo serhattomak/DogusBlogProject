@@ -1,8 +1,24 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Anasayfa";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">Yeni Blog</h5>
+        <form>
+            <textarea class="form-control mb-2" rows="3" placeholder="Ne düşünüyorsun?"></textarea>
+            <button class="btn btn-primary btn-sm">Gönder</button>
+        </form>
+    </div>
 </div>
+
+@for (int i = 1; i <= 5; i++)
+{
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">Blog Başlığı @i</h5>
+            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            <a href="#" class="btn btn-sm btn-outline-primary">Detay</a>
+        </div>
+    </div>
+}
