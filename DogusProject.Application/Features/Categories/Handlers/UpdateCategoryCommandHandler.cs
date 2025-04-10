@@ -21,6 +21,7 @@ public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryComman
 			return Result.FailureResult("Category has not found.");
 
 		category.Name = request.Category.Name;
+		category.UpdatedAt = DateTime.UtcNow;
 		_repository.Update(category);
 		await _repository.SaveChangesAsync();
 

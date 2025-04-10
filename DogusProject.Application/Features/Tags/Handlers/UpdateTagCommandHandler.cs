@@ -21,6 +21,7 @@ public class UpdateTagCommandHandler : IRequestHandler<UpdateTagCommand, Result>
 			return Result.FailureResult("Tag has not found.");
 
 		tag.Name = request.Tag.Name;
+		tag.UpdatedAt = DateTime.UtcNow;
 
 		_repository.Update(tag);
 		await _repository.SaveChangesAsync();
