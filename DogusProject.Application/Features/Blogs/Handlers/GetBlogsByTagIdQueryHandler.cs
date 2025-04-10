@@ -22,6 +22,10 @@ public class GetBlogsByTagIdQueryHandler : IRequestHandler<GetBlogsByTagIdQuery,
 	public async Task<Result<PagedResult<BlogResponseDto>>> Handle(GetBlogsByTagIdQuery request, CancellationToken cancellationToken)
 	{
 		var blogs = await _blogRepository.GetBlogsByTagIdAsync(request.TagId);
+
+		if (blogs == null)
+			return Result<PagedResult<BlogResponseDto>>.FailureResult("Blog not found.");
+
 		var paged = blogs
 			.Skip((request.Page - 1) * request.PageSize)
 			.Take(request.PageSize)

@@ -58,7 +58,8 @@ public class BlogRepository(AppIdentityDbContext context) : EfRepository<Blog>(c
 	{
 		return await _context.Blogs
 			.Include(b => b.Category)
-			.Include(b => b.UserId)
+			.Include(b => b.BlogTags)
+			.ThenInclude(bt => bt.Tag)
 			.Where(b => b.CategoryId == categoryId)
 			.ToListAsync();
 	}
@@ -67,18 +68,27 @@ public class BlogRepository(AppIdentityDbContext context) : EfRepository<Blog>(c
 	{
 		return await _context.Blogs
 			.Include(b => b.Category)
-			.Include(b => b.UserId)
-			.Include(b => b.BlogTags).ThenInclude(bt => bt.Tag)
+			.Include(b => b.BlogTags)
+			.ThenInclude(bt => bt.Tag)
 			.Where(b => b.BlogTags.Any(bt => bt.TagId == tagId))
 			.ToListAsync();
 	}
 
-	public async Task<List<Blog>> GetBlogsByAuthorIdAsync(Guid userId)
+	public async Task<List<Blog>> GetBlogsByAuthorIdAsync(Guid authorId)
 	{
 		return await _context.Blogs
 			.Include(b => b.Category)
-			.Include(b => b.UserId)
-			.Where(b => b.UserId == userId)
+			.Include(b => b.BlogTags)
+			.ThenInclude(bt => bt.Tag)
+			.Where(b => b.UserId == authorId)
 			.ToListAsync();
+	}
+	public async Task RemoveBlogTagsAsync(Guid blogId)
+	{
+		var tags = await _context.BlogTags
+			.Where(bt => bt.BlogId == blogId)
+			.ToListAsync();
+
+		_context.BlogTags.RemoveRange(tags);
 	}
 }

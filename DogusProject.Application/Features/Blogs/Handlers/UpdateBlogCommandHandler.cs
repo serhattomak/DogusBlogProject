@@ -30,20 +30,25 @@ public class UpdateBlogCommandHandler : IRequestHandler<UpdateBlogCommand, Resul
 		_mapper.Map(request.Blog, blog);
 		blog.UpdatedAt = DateTime.UtcNow;
 
-		blog.BlogTags.Clear();
+		await _repository.RemoveBlogTagsAsync(blog.Id);
 
-		if (request.Blog.TagIds is not null && request.Blog.TagIds.Any())
+		blog.BlogTags = request.Blog.TagIds
+			.Distinct()
+			.Select(tagId => new BlogTag
+			{
+				BlogId = blog.Id,
+				TagId = tagId
+			}).ToList();
+
+		try
 		{
-			blog.BlogTags = request.Blog.TagIds
-				.Select(tagId => new BlogTag
-				{
-					BlogId = blog.Id,
-					TagId = tagId
-				}).ToList();
+			_repository.Update(blog);
+			await _repository.SaveChangesAsync();
 		}
-
-		_repository.Update(blog);
-		await _repository.SaveChangesAsync();
+		catch (Exception ex)
+		{
+			return Result.FailureResult($"Update failed: {ex.Message}");
+		}
 
 		return Result.SuccessResult("Blog updated successfully.");
 	}

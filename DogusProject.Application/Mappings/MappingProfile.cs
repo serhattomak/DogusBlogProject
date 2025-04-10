@@ -24,7 +24,13 @@ public class MappingProfile : Profile
 			.ForMember(dest => dest.BlogTags, opt => opt.Ignore());
 
 		CreateMap<UpdateBlogDto, Blog>()
-			.ForMember(dest => dest.BlogTags, opt => opt.Ignore());
+			.ForMember(dest => dest.BlogTags, opt => opt.Ignore())
+			.ForMember(dest => dest.Category, opt => opt.Ignore())
+			.ForMember(dest => dest.UserId, opt => opt.Ignore());
+
+
+		CreateMap<Blog, UpdateBlogDto>()
+			.ForMember(dest => dest.TagIds, opt => opt.MapFrom(src => src.BlogTags.Select(bt => bt.TagId)));
 
 		// Category
 		CreateMap<Category, CategoryDto>().ReverseMap();
