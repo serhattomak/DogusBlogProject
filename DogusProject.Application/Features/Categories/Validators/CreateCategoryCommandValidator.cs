@@ -7,6 +7,9 @@ public class CreateCategoryCommandValidator : AbstractValidator<CreateCategoryCo
 {
 	public CreateCategoryCommandValidator()
 	{
-		RuleFor(x => x.Category.Name).NotEmpty().MinimumLength(2);
+		RuleFor(x => x.Category.Name)
+			.NotEmpty().WithMessage("Category name cannot be null.")
+			.MinimumLength(2).WithMessage("Category name must be at least 2 characters.")
+			.MaximumLength(100).WithMessage("Category name cannot exceed 100 characters.");
 	}
 }

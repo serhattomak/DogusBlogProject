@@ -15,15 +15,15 @@ namespace DogusProject.API.Controllers
 		private readonly UserManager<AppUser> _userManager;
 		private readonly SignInManager<AppUser> _signInManager;
 		private readonly RoleManager<AppRole> _roleManager;
-		private readonly IAuthService _tokenService;
+		private readonly IAuthService _authService;
 		private readonly IMapper _mapper;
 		private readonly ILogger<AuthController> _logger;
 
-		public AuthController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IAuthService tokenService, IMapper mapper, ILogger<AuthController> logger, RoleManager<AppRole> roleManager)
+		public AuthController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IAuthService authService, IMapper mapper, ILogger<AuthController> logger, RoleManager<AppRole> roleManager)
 		{
 			_userManager = userManager;
 			_signInManager = signInManager;
-			_tokenService = tokenService;
+			_authService = authService;
 			_mapper = mapper;
 			_logger = logger;
 			_roleManager = roleManager;
@@ -32,42 +32,72 @@ namespace DogusProject.API.Controllers
 		[HttpPost("register")]
 		public async Task<ActionResult> Register(RegisterRequestDto registerDto)
 		{
-			var user = _mapper.Map<AppUser>(registerDto);
-
-			var result = await _userManager.CreateAsync(user, registerDto.Password);
-			if (!result.Succeeded)
-				return BadRequest(Result.FailureResult(result.Errors.Select(e => e.Description).ToList()));
-
-			if (!await _roleManager.RoleExistsAsync("User"))
-				await _roleManager.CreateAsync(new AppRole { Name = "User" });
-
-			await _userManager.AddToRoleAsync(user, "User");
-
-			return Ok(Result.SuccessResult("Successful registration."));
+			var result = await _authService.RegisterAsync(registerDto);
+			return result.Success ? Ok(result) : BadRequest(result);
 		}
 
 		[HttpPost("login")]
 		public async Task<ActionResult> Login(LoginRequestDto loginDto)
 		{
-			var user = await _userManager.FindByEmailAsync(loginDto.Email);
-			if (user == null)
-				return Unauthorized(Result.FailureResult("User not found."));
-
-			var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
-			if (!result.Succeeded)
-				return Unauthorized(Result.FailureResult("Wrong password."));
-
-			var roles = await _userManager.GetRolesAsync(user);
-			var token = _tokenService.CreateToken(user, roles);
-
-			var response = new AuthResponseDto
-			{
-				Token = token,
-				UserName = user.UserName,
-				Roles = roles.ToList()
-			};
-
-			return Ok(Result<AuthResponseDto>.SuccessResult(response));
+			var result = await _authService.LoginAsync(loginDto);
+			return result.Success ? Ok(result) : BadRequest(result);
 		}
+
+		[HttpPost("updateUserInfo")]
+		public async Task<ActionResult> UpdateUserInfo(UpdateUserInfoDto dto)
+		{
+			await _authService.UpdateUserInfoAsync(dto);
+			return Ok(Result.SuccessResult("User information updated successfully."));
+		}
+
+		[HttpPost("changePassword")]
+		public async Task<ActionResult> ChangePassword(Guid userId, string password, string newPassword)
+		{
+			await _authService.ChangePasswordAsync(userId, password, newPassword);
+			return Ok(Result.SuccessResult("Password changed successfully."));
+		}
+
+		[HttpPost("create-role")]
+		public async Task<IActionResult> CreateRole([FromBody] string roleName)
+		{
+			var result = await _authService.CreateRoleAsync(roleName);
+			return result.Success ? Ok(result) : BadRequest(result);
+		}
+
+		[HttpPost("assign-role")]
+		public async Task<IActionResult> AssignRoleToUser([FromBody] AssignRoleRequestDto dto)
+		{
+			var result = await _authService.AssignRoleToUserAsync(dto);
+			return result.Success ? Ok(result) : BadRequest(result);
+		}
+
+		[HttpGet("get-user-roles/{userId}")]
+		public async Task<IActionResult> GetUserRoles(Guid userId)
+		{
+			var result = await _authService.GetUserRolesAsync(userId);
+			return result.Success ? Ok(result) : BadRequest(result);
+		}
+
+		[HttpPost("remove-user-role")]
+		public async Task<IActionResult> RemoveUserRole([FromBody] RemoveUserRoleRequestDto dto)
+		{
+			var result = await _authService.RemoveUserFromRoleAsync(dto);
+			return result.Success ? Ok(result) : BadRequest(result);
+		}
+
+		[HttpGet("all-roles")]
+		public async Task<IActionResult> GetAllRoles()
+		{
+			var result = await _authService.GetAllRolesAsync();
+			return result.Success ? Ok(result) : BadRequest(result);
+		}
+
+		[HttpPost("users")]
+		public async Task<IActionResult> GetUsers([FromBody] UserListRequestDto request)
+		{
+			var result = await _authService.GetUsersAsync(request);
+			return result.Success ? Ok(result) : BadRequest(result);
+		}
+
 	}
 }
