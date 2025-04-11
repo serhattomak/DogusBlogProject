@@ -1,0 +1,21 @@
+﻿@model DogusProject.Web.Models.Tag.DTOs.TagDto
+@{
+    ViewData["Title"] = "Etiketi Düzenle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Yeni Etiket</h2>
+
+<form asp-area="Admin" asp-controller="Tag" asp-action="Edit" method="post">
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-success">Kaydet</button>
+    <a asp-action="Index" class="btn btn-secondary">Geri Dön</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

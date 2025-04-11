@@ -1,0 +1,43 @@
+﻿@model DogusProject.Web.Models.Tag.ViewModels.BlogsByTagViewModel
+
+@{
+    ViewData["Title"] = "Etikete Ait Bloglar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Etikete Ait Bloglar</h2>
+
+@if (!Model.PagedBlogs.Items.Any())
+{
+    <div class="alert alert-info">Bu etikete ait henüz blog yok.</div>
+}
+else
+{
+    @foreach (var blog in Model.PagedBlogs.Items)
+    {
+        <div class="card mb-3">
+            <div class="card-body">
+                <h4 class="card-title">@blog.Title</h4>
+                <p class="card-text">@blog.Content.Substring(0, Math.Min(blog.Content.Length, 150))...</p>
+                <a asp-area="Public" asp-controller="Blog" asp-action="Detail" asp-route-id="@blog.Id"
+                   class="btn btn-sm btn-outline-primary">Devamını Oku</a>
+            </div>
+        </div>
+    }
+
+    <nav>
+        <ul class="pagination">
+            @for (int i = 1; i <= Math.Ceiling((double)Model.PagedBlogs.TotalCount / Model.PagedBlogs.PageSize); i++)
+            {
+                <li class="page-item @(i == Model.PagedBlogs.CurrentPage ? "active" : "")">
+                    <a class="page-link"
+                       asp-area="Public"
+                       asp-controller="Tag"
+                       asp-action="BlogsByTag"
+                       asp-route-id="@Model.TagId"
+                       asp-route-page="@i">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}

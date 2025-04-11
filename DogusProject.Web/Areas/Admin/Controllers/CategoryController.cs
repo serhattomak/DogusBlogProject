@@ -76,7 +76,7 @@ namespace DogusProject.Web.Areas.Admin.Controllers
 			return View(result.Data);
 		}
 
-		[HttpPost("edit/{id}")]
+		[HttpPost("category/edit/{id}")]
 		public async Task<IActionResult> Edit(Guid id, CategoryDto dto)
 		{
 			if (!ModelState.IsValid)
@@ -96,7 +96,7 @@ namespace DogusProject.Web.Areas.Admin.Controllers
 			return RedirectToAction("Index");
 		}
 
-		[HttpPost("delete/{id}")]
+		[HttpPost("category/delete/{id}")]
 		public async Task<IActionResult> Delete(Guid id)
 		{
 			var token = HttpContext.Session.GetString("AccessToken");

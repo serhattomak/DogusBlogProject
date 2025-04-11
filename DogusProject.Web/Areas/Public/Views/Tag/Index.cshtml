@@ -1,0 +1,17 @@
+﻿@model List<DogusProject.Web.Models.Tag.DTOs.TagDto>
+@{
+    ViewData["Title"] = "Etiketler";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Etiketler</h2>
+
+<div class="d-flex flex-wrap">
+    @foreach (var tag in Model)
+    {
+        <a asp-area="Public" asp-controller="Tag" asp-action="BlogsByTag" asp-route-id="@tag.Id"
+           class="badge bg-secondary text-decoration-none m-1 p-2">
+            #@tag.Name
+        </a>
+    }
+</div>
