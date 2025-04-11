@@ -1,4 +1,6 @@
-﻿namespace DogusProject.Web.Models.Blog.DTOs;
+﻿using DogusProject.Domain.Enums;
+
+namespace DogusProject.Web.Models.Blog.DTOs;
 
 public class BlogResponseDto
 {
@@ -12,5 +14,5 @@ public class BlogResponseDto
 	public List<string> Tags { get; set; } = new();
 	public DateTime CreatedAt { get; set; }
 	public DateTime? PublishedAt { get; set; }
-	public int Status { get; set; }
+	public BlogStatus Status { get; set; }
 }
