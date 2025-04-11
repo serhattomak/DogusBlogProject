@@ -1,8 +1,13 @@
 ﻿using DogusProject.Application.Common;
+using DogusProject.Application.Common.Pagination;
+using DogusProject.Application.Features.Blogs.Dtos;
 using DogusProject.Web.Models.Auth.DTOs;
+using DogusProject.Web.Models.Auth.ViewModels;
+using DogusProject.Web.Models.Comment.DTOs;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 
 namespace DogusProject.Web.Areas.Auth.Controllers
@@ -44,6 +49,8 @@ namespace DogusProject.Web.Areas.Auth.Controllers
 				ModelState.AddModelError(string.Empty, result.Errors.FirstOrDefault() ?? "Hata oluştu.");
 				return View(dto);
 			}
+
+			HttpContext.Session.SetString("AccessToken", result.Data.Token);
 
 			var claims = new List<Claim>
 			{
@@ -196,6 +203,64 @@ namespace DogusProject.Web.Areas.Auth.Controllers
 
 			TempData["Success"] = "Şifreniz başarıyla güncellendi.";
 			return RedirectToAction("ChangePassword");
+		}
+
+		[HttpGet("profile")]
+		public async Task<IActionResult> Profile()
+		{
+			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+			if (string.IsNullOrEmpty(userId))
+				return RedirectToAction("Login", "Auth", new { area = "Auth" });
+
+			var token = HttpContext.Session.GetString("AccessToken");
+			if (string.IsNullOrEmpty(token))
+			{
+				TempData["Error"] = "Token bulunamadı. Lütfen tekrar giriş yapın.";
+				return RedirectToAction("Login", "Auth", new { area = "Auth" });
+			}
+
+			_client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+			Result<UserInfoDto>? userResult = null;
+			Result<List<string>>? rolesResult = null;
+			Result<PagedResult<BlogResponseDto>>? blogsResult = null;
+			Result<List<CommentResponseDto>>? commentsResult = null;
+
+			try
+			{
+				var userResponse = await _client.GetAsync($"auth/user/{userId}");
+				userResponse.EnsureSuccessStatusCode();
+				userResult = await userResponse.Content.ReadFromJsonAsync<Result<UserInfoDto>>();
+
+				var rolesResponse = await _client.GetAsync($"auth/get-user-roles/{userId}");
+				rolesResponse.EnsureSuccessStatusCode();
+				rolesResult = await rolesResponse.Content.ReadFromJsonAsync<Result<List<string>>>();
+
+				var blogsResponse = await _client.GetAsync($"blog/by-author/{userId}?page=1&pageSize=10");
+				blogsResponse.EnsureSuccessStatusCode();
+				blogsResult = await blogsResponse.Content.ReadFromJsonAsync<Result<PagedResult<BlogResponseDto>>>();
+
+				var commentsResponse = await _client.GetAsync($"comment/by-user/{userId}");
+				commentsResponse.EnsureSuccessStatusCode();
+				commentsResult = await commentsResponse.Content.ReadFromJsonAsync<Result<List<CommentResponseDto>>>();
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"[Profile Error] {ex.Message}");
+				TempData["Error"] = "Profil verileri alınamadı.";
+				return RedirectToAction("Index", "Home", new { area = "" });
+			}
+
+			var model = new UserProfileViewModel
+			{
+				UserName = userResult?.Data?.UserName ?? "Bilinmiyor",
+				Email = userResult?.Data?.Email ?? "Bilinmiyor",
+				Roles = rolesResult?.Data ?? new(),
+				Blogs = blogsResult?.Data?.Items ?? new(),
+				Comments = commentsResult?.Data ?? new()
+			};
+
+			return View(model);
 		}
 
 	}

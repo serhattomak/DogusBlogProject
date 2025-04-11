@@ -1,4 +1,6 @@
-﻿namespace DogusProject.Application.Features.Blogs.Dtos;
+﻿using DogusProject.Domain.Enums;
+
+namespace DogusProject.Application.Features.Blogs.Dtos;
 
 public class BlogResponseDto
 {
@@ -10,4 +12,6 @@ public class BlogResponseDto
 	public string? ImagePath { get; set; }
 	public string Author { get; set; } = null!;
 	public DateTime? PublishedAt { get; set; }
+	public DateTime CreatedAt { get; set; }
+	public BlogStatus Status { get; set; }
 }

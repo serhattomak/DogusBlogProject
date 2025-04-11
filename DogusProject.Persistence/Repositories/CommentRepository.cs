@@ -21,4 +21,12 @@ public class CommentRepository : EfRepository<Comment>, ICommentRepository
 			.OrderByDescending(c => c.CreatedAt)
 			.ToListAsync();
 	}
+
+	public async Task<List<Comment>> GetCommentsByUserIdAsync(Guid userId)
+	{
+		return await _context.Comments
+			.Include(c => c.Blog)
+			.Where(c => c.UserId == userId)
+			.ToListAsync();
+	}
 }

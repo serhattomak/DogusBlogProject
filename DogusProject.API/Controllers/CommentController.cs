@@ -1,4 +1,6 @@
-﻿using DogusProject.Application.Features.Comments.Commands;
+﻿using DogusProject.Application.Common;
+using DogusProject.Application.Features.Comments.Commands;
+using DogusProject.Application.Features.Comments.Dtos;
 using DogusProject.Application.Features.Comments.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -36,6 +38,19 @@ namespace DogusProject.API.Controllers
 		public async Task<IActionResult> GetByBlogId(Guid blogId)
 		{
 			var result = await _mediator.Send(new GetCommentsByBlogIdQuery(blogId));
+			return Ok(result);
+		}
+
+		[HttpGet("by-user/{userId}")]
+		[Authorize]
+		public async Task<IActionResult> GetByUserId(Guid userId)
+		{
+			var result = await _mediator.Send(new GetCommentsByUserIdQuery(userId));
+			if (!result.Success || result.Data == null)
+			{
+				return Ok(Result<List<CommentResponseDto>>.SuccessResult(new List<CommentResponseDto>()));
+			}
+
 			return Ok(result);
 		}
 	}

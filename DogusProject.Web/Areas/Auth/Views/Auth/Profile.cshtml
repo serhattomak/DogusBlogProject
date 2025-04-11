@@ -1,0 +1,55 @@
+﻿@model DogusProject.Web.Models.Auth.ViewModels.UserProfileViewModel
+@{
+    ViewData["Title"] = "Profilim";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>👤 Profil Bilgileri</h2>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <p><strong>Kullanıcı Adı:</strong> @Model.UserName</p>
+        <p><strong>Email:</strong> @Model.Email</p>
+        <p><strong>Roller:</strong> @(Model.Roles.Any() ? string.Join(", ", Model.Roles) : "Yok")</p>
+    </div>
+</div>
+
+<h3>📝 Bloglarım</h3>
+
+@if (Model.Blogs.Any())
+{
+    foreach (var blog in Model.Blogs)
+    {
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">@blog.Title</h5>
+                <p class="card-text">@blog.Content.Substring(0, Math.Min(blog.Content.Length, 150))...</p>
+                <p class="text-muted"><small>@blog.PublishedAt?.ToString("dd.MM.yyyy")</small></p>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <p class="text-muted">Henüz bir blog yazısı yazmadınız.</p>
+}
+
+<h3>💬 Yorumlarım</h3>
+
+@if (Model.Comments.Any())
+{
+    <ul class="list-group mb-4">
+        @foreach (var comment in Model.Comments)
+        {
+            <li class="list-group-item">
+                <strong>@comment.Id:</strong> @comment.Content
+                <br />
+                <small class="text-muted">@comment.CreatedAt.ToString("dd.MM.yyyy HH:mm")</small>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p class="text-muted">Henüz yorum yapmadınız.</p>
+}

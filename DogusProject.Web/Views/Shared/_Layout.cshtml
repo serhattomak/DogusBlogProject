@@ -17,7 +17,7 @@
         <div class="d-flex">
             @if (HttpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false)
             {
-                <div class="me-2">Hoş geldin, @User.Identity.Name</div>
+                <div class="me-2">Hoş geldin, <a asp-area="Auth" asp-controller="Auth" asp-action="Profile" class="btn btn-outline-secondary btn-sm me-2">@User.Identity.Name</a></div>
                 <form method="post" asp-area="Auth" asp-controller="Auth" asp-action="Logout">
                     <button type="submit" class="btn btn-outline-secondary btn-sm">Çıkış</button>
                 </form>

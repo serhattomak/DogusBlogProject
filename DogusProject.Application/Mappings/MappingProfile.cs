@@ -28,7 +28,6 @@ public class MappingProfile : Profile
 			.ForMember(dest => dest.Category, opt => opt.Ignore())
 			.ForMember(dest => dest.UserId, opt => opt.Ignore());
 
-
 		CreateMap<Blog, UpdateBlogDto>()
 			.ForMember(dest => dest.TagIds, opt => opt.MapFrom(src => src.BlogTags.Select(bt => bt.TagId)));
 
@@ -46,5 +45,7 @@ public class MappingProfile : Profile
 		// Comment
 		CreateMap<CreateCommentCommand, Comment>();
 		CreateMap<Comment, CommentDto>();
+		CreateMap<Comment, CommentResponseDto>()
+			.ForMember(dest => dest.BlogTitle, opt => opt.MapFrom(src => src.Blog.Title));
 	}
 }

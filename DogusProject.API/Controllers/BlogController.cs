@@ -57,7 +57,12 @@ namespace DogusProject.API.Controllers
 		public async Task<IActionResult> GetByAuthor(Guid userId, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
 		{
 			var result = await _mediator.Send(new GetBlogsByAuthorIdQuery(userId, page, pageSize));
-			return result.Success ? Ok(result) : BadRequest(result);
+			if (!result.Success || result.Data == null)
+			{
+				return Ok(Result<List<BlogResponseDto>>.SuccessResult(new List<BlogResponseDto>()));
+			}
+
+			return Ok(result);
 		}
 
 		[HttpPost("create")]
