@@ -47,5 +47,6 @@ public class MappingProfile : Profile
 		CreateMap<Comment, CommentDto>();
 		CreateMap<Comment, CommentResponseDto>()
 			.ForMember(dest => dest.BlogTitle, opt => opt.MapFrom(src => src.Blog.Title));
+		CreateMap<CreateCommentDto, Comment>();
 	}
 }

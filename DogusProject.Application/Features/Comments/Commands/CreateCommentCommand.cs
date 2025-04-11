@@ -1,18 +1,15 @@
 ﻿using DogusProject.Application.Common;
+using DogusProject.Application.Features.Comments.Dtos;
 using MediatR;
 
 namespace DogusProject.Application.Features.Comments.Commands;
 
-public class CreateCommentCommand : IRequest<Result<Guid>>
+public class CreateCommentCommand : IRequest<Result>
 {
-	public Guid BlogId { get; set; }
-	public string Content { get; set; } = null!;
-	public Guid UserId { get; set; }
+	public CreateCommentDto Dto { get; }
 
-	public CreateCommentCommand(Guid blogId, string content, Guid userId)
+	public CreateCommentCommand(CreateCommentDto dto)
 	{
-		BlogId = blogId;
-		Content = content;
-		UserId = userId;
+		Dto = dto;
 	}
 }

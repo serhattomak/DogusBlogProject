@@ -7,7 +7,7 @@ using MediatR;
 
 namespace DogusProject.Application.Features.Comments.Handlers;
 
-public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand, Result<Guid>>
+public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand, Result>
 {
 	private readonly ICommentRepository _repository;
 	private readonly IMapper _mapper;
@@ -18,14 +18,14 @@ public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand,
 		_mapper = mapper;
 	}
 
-	public async Task<Result<Guid>> Handle(CreateCommentCommand request, CancellationToken cancellationToken)
+	public async Task<Result> Handle(CreateCommentCommand request, CancellationToken cancellationToken)
 	{
-		var comment = _mapper.Map<Comment>(request);
+		var comment = _mapper.Map<Comment>(request.Dto);
 		comment.CreatedAt = DateTime.UtcNow;
 
 		await _repository.AddAsync(comment);
 		await _repository.SaveChangesAsync();
 
-		return Result<Guid>.SuccessResult(comment.Id, "Comment added successfully.");
+		return Result.SuccessResult("Comment added successfully.");
 	}
 }

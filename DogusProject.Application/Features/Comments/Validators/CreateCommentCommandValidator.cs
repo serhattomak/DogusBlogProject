@@ -7,9 +7,9 @@ public class CreateCommentCommandValidator : AbstractValidator<CreateCommentComm
 {
 	public CreateCommentCommandValidator()
 	{
-		RuleFor(x => x.BlogId)
+		RuleFor(x => x.Dto.BlogId)
 			.NotEmpty().WithMessage("You must pick a valid blog.");
-		RuleFor(x => x.Content)
+		RuleFor(x => x.Dto.Content)
 			.NotEmpty().WithMessage("Comment content cannot be null.")
 			.MinimumLength(3).WithMessage("Comment must be at least 3 characters.");
 	}

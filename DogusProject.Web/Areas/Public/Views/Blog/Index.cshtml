@@ -1,0 +1,36 @@
+﻿@model PagedResult<DogusProject.Web.Models.Blog.DTOs.BlogResponseDto>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Bloglar";
+}
+
+<h2 class="mb-4">Tüm Bloglar</h2>
+
+@if (!Model.Items.Any())
+{
+    <div class="alert alert-info">Henüz blog bulunmamaktadır.</div>
+}
+else
+{
+    foreach (var blog in Model.Items)
+    {
+        <div class="card mb-3">
+            <div class="card-body">
+                <h4>@blog.Title</h4>
+                <p>@blog.Content.Substring(0, Math.Min(blog.Content.Length, 150))...</p>
+                <small><b>@blog.UserName</b> | @blog.PublishedAt</small>
+            </div>
+        </div>
+    }
+
+    <nav>
+        <ul class="pagination">
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(Model.CurrentPage == i ? "active" : "")">
+                    <a class="page-link" asp-area="Public" asp-controller="Blog" asp-action="Index" asp-route-page="@i">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}

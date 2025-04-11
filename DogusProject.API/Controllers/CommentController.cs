@@ -22,18 +22,18 @@ namespace DogusProject.API.Controllers
 
 		[HttpPost]
 		[Authorize]
-		public async Task<IActionResult> Create(Guid blogId, [FromBody] string content)
+		public async Task<IActionResult> Create([FromBody] CreateCommentDto dto)
 		{
 			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-			if (userId == null)
+			if (string.IsNullOrEmpty(userId))
 				return Unauthorized();
 
-			var command = new CreateCommentCommand(blogId, content, Guid.Parse(userId));
-			var result = await _mediator.Send(command);
+			dto.UserId = Guid.Parse(userId);
+			var result = await _mediator.Send(new CreateCommentCommand(dto));
 			return result.Success ? Ok(result) : BadRequest(result);
 		}
 
-		[HttpGet("{blogId}")]
+		[HttpGet("by-blog/{blogId}")]
 		[AllowAnonymous]
 		public async Task<IActionResult> GetByBlogId(Guid blogId)
 		{

@@ -1,0 +1,78 @@
+﻿@model DogusProject.Web.Models.Blog.ViewModels.BlogDetailViewModel
+
+@{
+    ViewData["Title"] = Model.Blog?.Title ?? "Blog Detay";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@if (Model?.Blog == null)
+{
+    <div class="alert alert-danger">Blog bulunamadı.</div>
+}
+else
+{
+    <div class="card mb-4">
+        <div class="card-body">
+            <h2 class="card-title">@Model.Blog.Title</h2>
+            <p class="text-muted">
+                <small>Kategori: <span class="badge bg-info">@Model.Blog.CategoryName</span></small> |
+                <small>Yazar: @Model.Blog.Author</small> |
+                <small>Oluşturulma: @Model.Blog.CreatedAt.ToString("dd.MM.yyyy HH:mm")</small>
+            </p>
+
+            <div class="mb-3">
+                @foreach (var tag in Model.Blog.Tags)
+                {
+                    <span class="badge bg-secondary me-1">#@tag</span>
+                }
+            </div>
+
+            <p class="card-text">@Model.Blog.Content</p>
+        </div>
+    </div>
+
+    <hr />
+
+    <h4>Yorumlar</h4>
+
+    @if (Model.Comments.Any())
+    {
+        @foreach (var comment in Model.Comments)
+        {
+            <div class="mb-3 p-3 border rounded shadow-sm">
+                <p class="mb-1">@comment.Content</p>
+                <small class="text-muted">@comment.CreatedAt.ToString("dd.MM.yyyy HH:mm")</small>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="alert alert-info">Henüz yorum yapılmamış.</div>
+    }
+
+    <hr />
+
+    @if (User.Identity!.IsAuthenticated)
+    {
+        <h5>Yorum Yaz</h5>
+        <form asp-action="Detail" asp-route-id="@Model.Blog.Id" method="post">
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" name="BlogId" value="@Model.Blog.Id" />
+
+            <div class="mb-3">
+                <textarea name="Content" class="form-control" rows="3" placeholder="Yorumunuzu yazın..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Yorum Yap</button>
+        </form>
+    }
+    else
+    {
+        <div class="alert alert-warning">Yorum yapabilmek için <a asp-area="Auth" asp-controller="Auth" asp-action="Login">giriş yapmalısınız</a>.</div>
+    }
+}
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
