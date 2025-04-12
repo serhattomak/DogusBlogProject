@@ -1,0 +1,132 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    var currentPath = HttpContextAccessor.HttpContext?.Request?.Path.Value?.ToLower();
+}
+
+<div class="sidebar py-4 pe-md-0 pe-lg-4 d-flex flex-column h-100">
+    <div class="mb-auto">
+        <ul class="nav nav-pills flex-column">
+
+            <li class="nav-item">
+                <a asp-area="Public" asp-controller="Blog" asp-action="Index"
+                   class="nav-link d-flex align-items-center @(currentPath == "/blog" ? "active" : "")">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round" class="me-lg-3">
+                        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                    <span class="d-none d-lg-inline">Bloglar</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a asp-area="Public" asp-controller="Category" asp-action="Index"
+                   class="nav-link d-flex align-items-center @(currentPath == "/category" ? "active" : "")">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round" class="me-lg-3">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    <span class="d-none d-lg-inline">Kategoriler</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a asp-area="Public" asp-controller="Tag" asp-action="Index"
+                   class="nav-link d-flex align-items-center @(currentPath == "/tags" ? "active" : "")">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round" class="me-lg-3">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                    </svg>
+                    <span class="d-none d-lg-inline">Etiketler</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a asp-area="Auth" asp-controller="Auth" asp-action="Profile"
+                   class="nav-link d-flex align-items-center @(currentPath == "/profile" ? "active" : "")">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round" class="me-lg-3">
+                        <circle cx="12" cy="8" r="5"></circle>
+                        <path d="M20 21a8 8 0 1 0-16 0"></path>
+                    </svg>
+                    <span class="d-none d-lg-inline">Profil</span>
+                </a>
+            </li>
+
+            @if (HttpContextAccessor.HttpContext?.User.IsInRole("Admin") == true)
+            {
+                <li class="nav-item">
+                    <span class="text-muted fw-bold small">Admin Panel</span>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center @(currentPath == "/admin/category" ? "active" : "")" asp-area="Admin" asp-controller="Category" asp-action="Index">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                             stroke-linejoin="round" class="me-lg-3">
+                            <circle cx="12" cy="8" r="5"></circle>
+                            <path d="M20 21a8 8 0 1 0-16 0"></path>
+                        </svg>
+                        <span class="d-none d-lg-inline">Kategori Yönetimi</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center @(currentPath == "/admin/tag" ? "active" : "")" asp-area="Admin" asp-controller="Tag" asp-action="Index">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                             stroke-linejoin="round" class="me-lg-3">
+                            <circle cx="12" cy="8" r="5"></circle>
+                            <path d="M20 21a8 8 0 1 0-16 0"></path>
+                        </svg>
+                        <span class="d-none d-lg-inline">Etiket Yönetimi</span>
+                    </a>
+                </li>
+            }
+
+            @if (HttpContextAccessor.HttpContext?.User.IsInRole("Author") == true)
+            {
+                <li class="nav-item">
+                    <span class="text-muted fw-bold small">Yazar Panel</span>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center @(currentPath == "/author/blog" ? "active" : "")" asp-area="Author" asp-controller="Blog" asp-action="Index">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                             stroke-linejoin="round" class="me-lg-3">
+                            <circle cx="12" cy="8" r="5"></circle>
+                            <path d="M20 21a8 8 0 1 0-16 0"></path>
+                        </svg>
+                        <span class="d-none d-lg-inline">Bloglarım</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center @(currentPath == "/author/blog/create" ? "active" : "")" asp-area="Author" asp-controller="Blog" asp-action="Create">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                             stroke-linejoin="round" class="me-lg-3">
+                            <circle cx="12" cy="8" r="5"></circle>
+                            <path d="M20 21a8 8 0 1 0-16 0"></path>
+                        </svg>
+                        <span class="d-none d-lg-inline">Blog Yaz</span>
+                    </a>
+                </li>
+            }
+
+        </ul>
+    </div>
+
+    <div class="mt-auto">
+        <a asp-area="Author" asp-controller="Blog" asp-action="Create" class="btn btn-primary w-100">
+            <span class="d-none d-lg-inline">Blog Yayınla</span>
+            <span class="d-lg-none">+</span>
+        </a>
+    </div>
+</div>

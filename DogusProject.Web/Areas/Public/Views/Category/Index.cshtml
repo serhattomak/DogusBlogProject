@@ -1,0 +1,23 @@
+﻿@model List<DogusProject.Web.Models.Category.DTOs.CategoryDto>
+@{
+    ViewData["Title"] = "Kategoriler";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Kategoriler</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Adı</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var category in Model)
+        {
+            <tr>
+                <td>@category.Name</td>
+            </tr>
+        }
+    </tbody>
+</table>

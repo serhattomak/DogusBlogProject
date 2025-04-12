@@ -8,6 +8,7 @@ namespace DogusProject.Web.Areas.Admin.Controllers
 {
 	[Area("Admin")]
 	[Authorize(Roles = "Admin")]
+	[Route("admin/category")]
 	public class CategoryController : BaseController
 	{
 		private readonly HttpClient _client;
@@ -17,7 +18,7 @@ namespace DogusProject.Web.Areas.Admin.Controllers
 			_client = httpClientFactory.CreateClient("ApiClient");
 		}
 
-		[HttpGet]
+		[HttpGet("")]
 		public async Task<IActionResult> Index()
 		{
 			var response = await _client.GetAsync("category");
@@ -37,13 +38,13 @@ namespace DogusProject.Web.Areas.Admin.Controllers
 			return View(result.Data ?? new());
 		}
 
-		[HttpGet]
+		[HttpGet("category/create")]
 		public IActionResult Create()
 		{
 			return View();
 		}
 
-		[HttpPost]
+		[HttpPost("category/create")]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Create(CreateCategoryDto dto)
 		{

@@ -1,0 +1,29 @@
+﻿@model DogusProject.Web.Models.Sidebar.ViewModels.RightSidebarViewModel
+
+<div class="sidebar py-4 ps-md-3 border-start">
+    <div class="mb-4">
+        <h6 class="text-muted text-uppercase fw-bold mb-3">Kategoriler</h6>
+        <ul class="nav nav-pills flex-column">
+            @foreach (var category in Model.PopularCategories)
+            {
+                <li class="nav-item">
+                    <a asp-area="Public" asp-controller="Category" asp-action="BlogsByCategory" asp-route-id="@category.Id" class="nav-link d-flex align-items-center">
+                        <span>@category.Name</span>
+                    </a>
+                </li>
+            }
+        </ul>
+    </div>
+
+    <div class="mb-4">
+        <h6 class="text-muted text-uppercase fw-bold mb-3">Etiketler</h6>
+        <ul class="nav nav-pills flex-column">
+            @foreach (var tag in Model.PopularTags)
+            {
+                <li class="nav-item"><a asp-area="Public" asp-controller="Tag" asp-action="BlogsByTag" asp-route-id="@tag.Id" class="nav-link d-flex align-items-center">
+                    <span>#@tag.Name</span>
+                </a></li>
+            }
+        </ul>
+    </div>
+</div>
