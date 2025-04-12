@@ -38,10 +38,10 @@
                     </td>
                     <td>@blog.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
                     <td>
-                        <a asp-area="Author" asp-controller="Blog" asp-action="Edit" asp-route-id="@blog.Id" class="btn btn-sm btn-warning">Düzenle</a>
+                        <a asp-area="Author" asp-controller="Blog" asp-action="Edit" asp-route-id="@blog.Id" class="btn btn-sm btn-warning rounded-pill">Düzenle</a>
                         <form asp-area="Author" asp-controller="Blog" asp-action="Delete" asp-route-id="@blog.Id" method="post" class="d-inline">
                             @Html.AntiForgeryToken()
-                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Blog silinsin mi?')">Sil</button>
+                            <button type="submit" class="btn btn-sm btn-danger rounded-pill" onclick="return confirm('Blog silinsin mi?')">Sil</button>
                         </form>
                     </td>
                 </tr>

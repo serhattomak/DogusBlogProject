@@ -14,7 +14,7 @@
                 @if (HttpContextAccessor.HttpContext?.User.IsInRole("Author") == true ||
                 HttpContextAccessor.HttpContext?.User.IsInRole("Admin") == true)
                 {
-                    <a class="btn btn-sm btn-outline-primary" asp-area="Author" asp-controller="Blog" asp-action="Create">+ Yeni Blog</a>
+                    <a class="btn btn-sm btn-outline-primary rounded-pill" asp-area="Author" asp-controller="Blog" asp-action="Create">+ Yeni Blog</a>
                 }
             </div>
 
@@ -35,7 +35,7 @@
                             <p class="mb-2 text-secondary">@blog.Content</p>
 
                             <div class="d-flex justify-content-between align-items-center mt-2">
-                                <a asp-area="Public" asp-controller="Blog" asp-action="Detail" asp-route-id="@blog.Id" class="btn btn-outline-primary btn-sm">Devamını oku</a>
+                                <a asp-area="Public" asp-controller="Blog" asp-action="Detail" asp-route-id="@blog.Id" class="btn btn-outline-primary btn-sm rounded-pill">Devamını oku</a>
 
                                 <button type="button"
                                         class="btn btn-sm btn-outline-secondary"

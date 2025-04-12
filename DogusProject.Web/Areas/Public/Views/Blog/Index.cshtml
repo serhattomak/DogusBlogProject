@@ -13,7 +13,7 @@
                 @if (HttpContextAccessor.HttpContext?.User.IsInRole("Author") == true || 
                      HttpContextAccessor.HttpContext?.User.IsInRole("Admin") == true)
                 {
-                    <a class="btn btn-sm btn-outline-primary" asp-area="Author" asp-controller="Blog" asp-action="Create">+ Yeni Blog</a>
+                    <a class="btn btn-sm btn-outline-primary rounded-pill" asp-area="Author" asp-controller="Blog" asp-action="Create">+ Yeni Blog</a>
                 }
             </div>
 
@@ -32,7 +32,7 @@
                                     </p>
                                     <p class="card-text text-truncate">@blog.Content</p>
                                     <div class="mt-auto">
-                                        <a asp-area="Public" asp-controller="Blog" asp-action="Detail" asp-route-id="@blog.Id" class="btn btn-outline-primary btn-sm w-100">Devamını oku</a>
+                                        <a asp-area="Public" asp-controller="Blog" asp-action="Detail" asp-route-id="@blog.Id" class="btn btn-outline-primary btn-sm w-100 rounded-pill">Devamını oku</a>
                                     </div>
                                 </div>
                             </div>

@@ -39,21 +39,21 @@
                     @if (HttpContextAccessor.HttpContext?.User.Identity?.IsAuthenticated == true)
                     {
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="Auth" asp-controller="Auth" asp-action="Profile"><i class="bi bi-person-circle"></i> Profilim</a>
+                            <a class="nav-link rounded-pill" asp-area="Auth" asp-controller="Auth" asp-action="Profile"><i class="bi bi-person-circle"></i> Profilim</a>
                         </li>
                         <li class="nav-item">
                             <form method="post" asp-area="Auth" asp-controller="Auth" asp-action="Logout" class="d-inline">
-                                <button class="btn btn-outline-light btn-sm" type="submit"><i class="bi bi-box-arrow-right"></i> Çıkış</button>
+                                <button class="btn btn-outline-light btn-sm rounded-pill" type="submit"><i class="bi bi-box-arrow-right"></i> Çıkış</button>
                             </form>
                         </li>
                     }
                     else
                     {
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="Auth" asp-controller="Auth" asp-action="Login">Giriş Yap</a>
+                            <a class="nav-link rounded-pill" asp-area="Auth" asp-controller="Auth" asp-action="Login">Giriş Yap</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="Auth" asp-controller="Auth" asp-action="Register">Kayıt Ol</a>
+                            <a class="nav-link rounded-pill" asp-area="Auth" asp-controller="Auth" asp-action="Register">Kayıt Ol</a>
                         </li>
                     }
                 </ul>

@@ -5,7 +5,7 @@
 }
 
 <h2>Etiketler</h2>
-<a asp-area="Admin" asp-controller="Tag" asp-action="Create" class="btn btn-primary mb-3">+ Yeni Etiket</a>
+<a asp-area="Admin" asp-controller="Tag" asp-action="Create" class="btn btn-primary mb-3 rounded-pill">+ Yeni Etiket</a>
 
 <table class="table table-bordered">
     <thead>
@@ -20,9 +20,9 @@
         <tr>
             <td>@tag.Name</td>
             <td>
-                <a asp-area="Admin" asp-controller="Tag" asp-action="Edit" asp-route-id="@tag.Id" class="btn btn-sm btn-warning">Düzenle</a>
+                <a asp-area="Admin" asp-controller="Tag" asp-action="Edit" asp-route-id="@tag.Id" class="btn btn-sm btn-warning rounded-pill">Düzenle</a>
                 <form asp-area="Admin" asp-controller="Tag" asp-action="Delete" asp-route-id="@tag.Id" method="post" class="d-inline">
-                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Silmek istediğinize emin misiniz?')">Sil</button>
+                    <button type="submit" class="btn btn-sm btn-danger rounded-pill" onclick="return confirm('Silmek istediğinize emin misiniz?')">Sil</button>
                 </form>
             </td>
         </tr>

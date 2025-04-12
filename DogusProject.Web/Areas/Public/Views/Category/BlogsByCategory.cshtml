@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Kategoriye Ait Bloglar</h2>
+<h2>@Model.CategoryName Kategorisine Ait Bloglar</h2>
 
 @if (!Model.PagedBlogs.Items.Any())
 {
@@ -20,7 +20,7 @@ else
                 <h4 class="card-title">@blog.Title</h4>
                 <p class="card-text">@blog.Content.Substring(0, Math.Min(blog.Content.Length, 150))...</p>
                 <a asp-area="Public" asp-controller="Blog" asp-action="Detail" asp-route-id="@blog.Id"
-                   class="btn btn-sm btn-outline-primary">Devamını Oku</a>
+                   class="btn btn-sm btn-outline-primary rounded-pill">Devamını Oku</a>
             </div>
         </div>
     }
