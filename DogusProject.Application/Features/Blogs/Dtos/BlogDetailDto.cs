@@ -8,6 +8,7 @@ public class BlogDetailDto
 	public string CategoryName { get; set; } = string.Empty;
 	public List<string> Tags { get; set; } = new();
 	public string? ImagePath { get; set; }
+	public Guid UserId { get; set; }
 	public string Author { get; set; } = string.Empty;
 	public DateTime? PublishedAt { get; set; }
 	public DateTime CreatedAt { get; set; }

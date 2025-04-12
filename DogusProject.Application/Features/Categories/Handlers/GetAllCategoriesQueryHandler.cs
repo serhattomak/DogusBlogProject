@@ -21,7 +21,7 @@ public class GetAllCategoriesQueryHandler : IRequestHandler<GetAllCategoriesQuer
 	public async Task<Result<List<CategoryDto>>> Handle(GetAllCategoriesQuery request, CancellationToken cancellationToken)
 	{
 		var categories = await _repository.GetAllAsync();
-		var dto = _mapper.Map<List<CategoryDto>>(categories);
+		var dto = _mapper.Map<List<CategoryDto>>(categories.OrderByDescending(x => x.CreatedAt));
 		return Result<List<CategoryDto>>.SuccessResult(dto);
 	}
 }

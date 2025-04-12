@@ -25,8 +25,8 @@ public class RightSidebarViewComponent : ViewComponent
 
 		var viewModel = new RightSidebarViewModel
 		{
-			PopularCategories = categoriesResult?.Data?.Take(5).ToList() ?? new(),
-			PopularTags = tagsResult?.Data?.Take(10).ToList() ?? new()
+			PopularCategories = categoriesResult?.Data?.Take(5).OrderByDescending(x => x.CreatedAt).ToList() ?? new(),
+			PopularTags = tagsResult?.Data?.Take(10).OrderByDescending(x => x.CreatedAt).ToList() ?? new()
 		};
 
 		return View(viewModel);

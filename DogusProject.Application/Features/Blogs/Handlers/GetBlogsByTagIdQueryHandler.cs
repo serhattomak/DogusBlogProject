@@ -29,6 +29,7 @@ public class GetBlogsByTagIdQueryHandler : IRequestHandler<GetBlogsByTagIdQuery,
 		var paged = blogs
 			.Skip((request.Page - 1) * request.PageSize)
 			.Take(request.PageSize)
+			.OrderByDescending(x => x.CreatedAt)
 			.ToList();
 		var mapped = _mapper.Map<List<BlogResponseDto>>(paged);
 		return Result<PagedResult<BlogResponseDto>>.SuccessResult(new PagedResult<BlogResponseDto>(mapped, blogs.Count, request.Page, request.PageSize));

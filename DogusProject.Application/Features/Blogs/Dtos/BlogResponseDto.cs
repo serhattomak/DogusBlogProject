@@ -10,6 +10,7 @@ public class BlogResponseDto
 	public string CategoryName { get; set; } = null!;
 	public List<string> Tags { get; set; } = new();
 	public string? ImagePath { get; set; }
+	public Guid UserId { get; set; }
 	public string Author { get; set; } = null!;
 	public DateTime? PublishedAt { get; set; }
 	public DateTime CreatedAt { get; set; }

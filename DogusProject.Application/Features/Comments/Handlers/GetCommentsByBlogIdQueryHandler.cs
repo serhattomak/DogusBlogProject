@@ -21,7 +21,7 @@ public class GetCommentsByBlogIdQueryHandler : IRequestHandler<GetCommentsByBlog
 	public async Task<Result<List<CommentDto>>> Handle(GetCommentsByBlogIdQuery request, CancellationToken cancellationToken)
 	{
 		var comments = await _repository.GetByBlogIdAsync(request.BlogId);
-		var dto = _mapper.Map<List<CommentDto>>(comments);
+		var dto = _mapper.Map<List<CommentDto>>(comments.OrderByDescending(x => x.CreatedAt));
 
 		return Result<List<CommentDto>>.SuccessResult(dto);
 	}

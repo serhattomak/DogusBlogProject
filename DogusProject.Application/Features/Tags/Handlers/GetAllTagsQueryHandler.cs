@@ -21,7 +21,7 @@ public class GetAllTagsQueryHandler : IRequestHandler<GetAllTagsQuery, Result<Li
 	public async Task<Result<List<TagDto>>> Handle(GetAllTagsQuery request, CancellationToken cancellationToken)
 	{
 		var tags = await _repository.GetAllAsync();
-		var dto = _mapper.Map<List<TagDto>>(tags);
+		var dto = _mapper.Map<List<TagDto>>(tags.OrderByDescending(x => x.CreatedAt));
 		return Result<List<TagDto>>.SuccessResult(dto);
 	}
 }

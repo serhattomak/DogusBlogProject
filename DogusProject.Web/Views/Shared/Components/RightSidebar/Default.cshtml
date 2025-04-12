@@ -2,7 +2,7 @@
 
 <div class="sidebar py-4 ps-md-3 border-start">
     <div class="mb-4">
-        <h6 class="text-muted text-uppercase fw-bold mb-3">Kategoriler</h6>
+        <h6 class="text-muted text-uppercase fw-bold mb-3">Popüler Kategoriler</h6>
         <ul class="nav nav-pills flex-column">
             @foreach (var category in Model.PopularCategories)
             {
@@ -16,7 +16,7 @@
     </div>
 
     <div class="mb-4">
-        <h6 class="text-muted text-uppercase fw-bold mb-3">Etiketler</h6>
+        <h6 class="text-muted text-uppercase fw-bold mb-3">Popüler Etiketler</h6>
         <ul class="nav nav-pills flex-column">
             @foreach (var tag in Model.PopularTags)
             {
