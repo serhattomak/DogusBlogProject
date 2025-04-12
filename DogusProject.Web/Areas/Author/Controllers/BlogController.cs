@@ -1,11 +1,10 @@
-﻿using DogusProject.Web.Models.Blog.ViewModels;
+﻿using DogusProject.Web.Controllers;
+using DogusProject.Web.Models.Blog.ViewModels;
 using DogusProject.Web.Models.Category.DTOs;
 using DogusProject.Web.Models.Common;
 using DogusProject.Web.Models.Tag.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Http.Headers;
-using System.Security.Claims;
 using BlogResponseDto = DogusProject.Web.Models.Blog.DTOs.BlogResponseDto;
 using CreateBlogDto = DogusProject.Web.Models.Blog.DTOs.CreateBlogDto;
 using UpdateBlogDto = DogusProject.Web.Models.Blog.DTOs.UpdateBlogDto;
@@ -13,8 +12,9 @@ using UpdateBlogDto = DogusProject.Web.Models.Blog.DTOs.UpdateBlogDto;
 namespace DogusProject.Web.Areas.Author.Controllers
 {
 	[Area("Author")]
+	[Authorize(Roles = "Author,Admin")]
 	[Route("author/blog")]
-	public class BlogController : Controller
+	public class BlogController : BaseController
 	{
 		private readonly HttpClient _client;
 
@@ -24,15 +24,11 @@ namespace DogusProject.Web.Areas.Author.Controllers
 		}
 
 		[HttpGet]
-		[Authorize(Roles = "Author,Admin")]
 		public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
 		{
-			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-			if (string.IsNullOrEmpty(userId))
+			var userId = CurrentUserId;
+			if (userId == Guid.Empty)
 				return Unauthorized();
-			var token = HttpContext.Session.GetString("AccessToken");
-			if (!string.IsNullOrEmpty(token))
-				_client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
 			var response = await _client.GetAsync($"blog/by-author/{userId}?page={page}&pageSize={pageSize}");
 			if (!response.IsSuccessStatusCode)
@@ -40,16 +36,19 @@ namespace DogusProject.Web.Areas.Author.Controllers
 				TempData["Error"] = "Bloglar getirilemedi.";
 				return View(new PagedResult<BlogResponseDto>([], 0, page, pageSize));
 			}
-			var result = await response.Content.ReadFromJsonAsync<Result<PagedResult<BlogResponseDto>>>();
-			return View(result!.Data);
+			var result = await ReadResponse<Result<PagedResult<BlogResponseDto>>>(response);
+
+			if (result == null || !result.Success)
+				return View(new PagedResult<BlogResponseDto>([], 0, page, pageSize));
+
+			return View(result.Data);
 		}
 
 		[HttpGet("my-blogs")]
-		[Authorize(Roles = "Author,Admin")]
 		public async Task<IActionResult> MyBlogs(int page = 1, int pageSize = 10)
 		{
-			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-			if (string.IsNullOrEmpty(userId))
+			var userId = CurrentUserId;
+			if (userId == Guid.Empty)
 				return Unauthorized();
 
 			var response = await _client.GetAsync($"blog/by-author/{userId}?page={page}&pageSize={pageSize}");
@@ -59,8 +58,10 @@ namespace DogusProject.Web.Areas.Author.Controllers
 				return View(new PagedResult<BlogResponseDto>([], 0, page, pageSize));
 			}
 
-			var result = await response.Content.ReadFromJsonAsync<Result<PagedResult<BlogResponseDto>>>();
-			return View(result!.Data);
+			var result = await ReadResponse<Result<PagedResult<BlogResponseDto>>>(response);
+			if (result == null || !result.Success)
+				return View(new PagedResult<BlogResponseDto>([], 0, page, pageSize));
+			return View(result.Data);
 		}
 
 
@@ -81,7 +82,6 @@ namespace DogusProject.Web.Areas.Author.Controllers
 
 		[HttpPost("create")]
 		[ValidateAntiForgeryToken]
-		[Authorize(Roles = "Author,Admin")]
 		public async Task<IActionResult> Create(CreateBlogViewModel model)
 		{
 			if (!ModelState.IsValid)
@@ -89,12 +89,6 @@ namespace DogusProject.Web.Areas.Author.Controllers
 				await PrepareViewModelAsync(model);
 				return View(model);
 			}
-
-			var token = HttpContext.Session.GetString("AccessToken");
-			if (string.IsNullOrEmpty(token))
-				return Unauthorized();
-
-			_client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
 			var createdTagIds = new List<Guid>();
 
@@ -134,14 +128,13 @@ namespace DogusProject.Web.Areas.Author.Controllers
 			{
 				ModelState.AddModelError(string.Empty, "Blog oluşturulamadı.");
 				await PrepareViewModelAsync(model);
-				return View(model);
+				return HandleApiFailure("Blog oluşturulamadı.", model);
 			}
 
 			return RedirectToAction("Index", "Blog");
 		}
 
 		[HttpGet("edit/{id}")]
-		[Authorize(Roles = "Author,Admin")]
 		public async Task<IActionResult> Edit(Guid id)
 		{
 			var blogResponse = await _client.GetAsync($"blog/{id}");
@@ -180,15 +173,10 @@ namespace DogusProject.Web.Areas.Author.Controllers
 
 		[HttpPost("edit/{id}")]
 		[ValidateAntiForgeryToken]
-		[Authorize(Roles = "Author,Admin")]
 		public async Task<IActionResult> Edit(Guid id, UpdateBlogViewModel model)
 		{
 			if (!ModelState.IsValid)
 				return View(model);
-
-			var token = HttpContext.Session.GetString("AccessToken");
-			if (!string.IsNullOrEmpty(token))
-				_client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
 			if (!string.IsNullOrWhiteSpace(model.NewTags))
 			{
@@ -224,7 +212,7 @@ namespace DogusProject.Web.Areas.Author.Controllers
 			if (!response.IsSuccessStatusCode)
 			{
 				ModelState.AddModelError(string.Empty, "Blog güncellenemedi.");
-				return View(model);
+				return HandleApiFailure("Blog güncellenemedi.", model);
 			}
 
 			return RedirectToAction("Index");
@@ -232,12 +220,8 @@ namespace DogusProject.Web.Areas.Author.Controllers
 
 		[HttpPost("delete/{id}")]
 		[ValidateAntiForgeryToken]
-		[Authorize(Roles = "Author,Admin")]
 		public async Task<IActionResult> Delete(Guid id)
 		{
-			var token = HttpContext.Session.GetString("AccessToken");
-			if (!string.IsNullOrEmpty(token))
-				_client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
 			var response = await _client.DeleteAsync($"blog/{id}");
 			if (!response.IsSuccessStatusCode)

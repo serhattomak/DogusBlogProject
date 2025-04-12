@@ -1,16 +1,16 @@
 ﻿using DogusProject.Application.Features.Blogs.Dtos;
+using DogusProject.Web.Controllers;
 using DogusProject.Web.Models.Blog.ViewModels;
 using DogusProject.Web.Models.Comment.DTOs;
 using DogusProject.Web.Models.Common;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using BlogResponseDto = DogusProject.Web.Models.Blog.DTOs.BlogResponseDto;
 
 namespace DogusProject.Web.Areas.Public.Controllers
 {
 	[Area("Public")]
 	[Route("blog")]
-	public class BlogController : Controller
+	public class BlogController : BaseController
 	{
 		private readonly HttpClient _client;
 
@@ -23,16 +23,12 @@ namespace DogusProject.Web.Areas.Public.Controllers
 		public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
 		{
 			var response = await _client.GetAsync($"blog/all?page={page}&pageSize={pageSize}");
+			var result = await ReadResponse<Result<PagedResult<BlogResponseDto>>>(response);
 
-			if (!response.IsSuccessStatusCode)
-			{
-				TempData["Error"] = "Bloglar getirilemedi.";
+			if (result is null || !result.Success)
 				return View(new PagedResult<BlogResponseDto>([], 0, page, pageSize));
-			}
 
-			var result = await response.Content.ReadFromJsonAsync<Result<PagedResult<BlogResponseDto>>>();
-
-			return View(result!.Data);
+			return View(result.Data);
 		}
 
 		[HttpGet("detail/{id}")]
@@ -70,17 +66,11 @@ namespace DogusProject.Web.Areas.Public.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Detail(Guid id, IFormCollection form)
 		{
-			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-			if (string.IsNullOrEmpty(userId))
+			var userId = CurrentUserId;
+			if (userId == Guid.Empty)
 			{
 				TempData["Error"] = "Yorum yapabilmek için giriş yapmalısınız.";
 				return RedirectToAction("Detail", new { id });
-			}
-
-			var token = HttpContext.Session.GetString("AccessToken");
-			if (!string.IsNullOrEmpty(token))
-			{
-				_client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 			}
 
 			var content = form["Content"].ToString();
@@ -112,13 +102,11 @@ namespace DogusProject.Web.Areas.Public.Controllers
 			var commentDto = new CreateCommentDto
 			{
 				BlogId = id,
-				UserId = Guid.Parse(userId),
+				UserId = (Guid)userId,
 				Content = content
 			};
 
 			var response = await _client.PostAsJsonAsync("comment", commentDto);
-			var responseText = await response.Content.ReadAsStringAsync();
-			Console.WriteLine("[Yorum API Yanıtı] " + responseText);
 
 			if (!response.IsSuccessStatusCode)
 			{

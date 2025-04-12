@@ -1,3 +1,4 @@
+using DogusProject.Web.Handlers;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Net.Http.Headers;
 
@@ -9,6 +10,7 @@ builder.Services.AddControllersWithViews()
 	.AddRazorRuntimeCompilation();
 builder.Services.AddRazorPages();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<AuthorizationHandler>();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 	.AddCookie(options =>
 	{
@@ -22,7 +24,8 @@ builder.Services.AddHttpClient("ApiClient", client =>
 {
 	client.BaseAddress = new Uri("https://localhost:7174/api/");
 	client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-});
+})
+.AddHttpMessageHandler<AuthorizationHandler>();
 
 
 var app = builder.Build();
