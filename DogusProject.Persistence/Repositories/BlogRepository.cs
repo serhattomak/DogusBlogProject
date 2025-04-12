@@ -83,6 +83,15 @@ public class BlogRepository(AppIdentityDbContext context) : EfRepository<Blog>(c
 			.Where(b => b.UserId == authorId)
 			.ToListAsync();
 	}
+	public async Task<Blog?> GetByIdWithCategoryAndTagsAsync(Guid id)
+	{
+		return await _context.Blogs
+			.Include(b => b.Category)
+			.Include(b => b.BlogTags)
+			.ThenInclude(bt => bt.Tag)
+			.FirstOrDefaultAsync(b => b.Id == id);
+	}
+
 	public async Task RemoveBlogTagsAsync(Guid blogId)
 	{
 		var tags = await _context.BlogTags

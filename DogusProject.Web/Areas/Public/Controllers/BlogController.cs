@@ -34,7 +34,7 @@ namespace DogusProject.Web.Areas.Public.Controllers
 		[HttpGet("detail/{id}")]
 		public async Task<IActionResult> Detail(Guid id)
 		{
-			var blogResponse = await _client.GetAsync($"blog/{id}");
+			var blogResponse = await _client.GetAsync($"blog/detail/{id}");
 
 			if (!blogResponse.IsSuccessStatusCode)
 			{
@@ -82,7 +82,7 @@ namespace DogusProject.Web.Areas.Public.Controllers
 
 			if (!ModelState.IsValid)
 			{
-				var blogResult = await _client.GetFromJsonAsync<Result<BlogDetailDto>>($"blog/{id}");
+				var blogResult = await _client.GetFromJsonAsync<Result<BlogDetailDto>>($"blog/detail/{id}");
 				var commentsResult = await _client.GetFromJsonAsync<Result<List<CommentResponseDto>>>($"comment/by-blog/{id}");
 
 				var vm = new BlogDetailViewModel

@@ -31,6 +31,9 @@ public class MappingProfile : Profile
 		CreateMap<Blog, UpdateBlogDto>()
 			.ForMember(dest => dest.TagIds, opt => opt.MapFrom(src => src.BlogTags.Select(bt => bt.TagId)));
 
+		CreateMap<Blog, BlogDetailDto>()
+			.ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.BlogTags.Select(bt => bt.Tag)));
+
 		// Category
 		CreateMap<Category, CategoryDto>().ReverseMap();
 		CreateMap<CreateCategoryDto, Category>();

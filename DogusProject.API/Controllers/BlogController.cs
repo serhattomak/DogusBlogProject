@@ -65,6 +65,14 @@ namespace DogusProject.API.Controllers
 			return Ok(result);
 		}
 
+		[HttpGet("detail/{id}")]
+		[AllowAnonymous]
+		public async Task<IActionResult> GetDetail(Guid id)
+		{
+			var result = await _mediator.Send(new GetBlogDetailQuery(id));
+			return result.Success ? Ok(result) : NotFound(result);
+		}
+
 		[HttpPost("create")]
 		[Authorize(Roles = "Author, Admin")]
 		public async Task<IActionResult> Create([FromBody] CreateBlogDto request)
