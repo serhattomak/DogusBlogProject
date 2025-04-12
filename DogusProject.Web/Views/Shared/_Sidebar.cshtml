@@ -3,12 +3,15 @@
 
 @{
     var currentPath = HttpContextAccessor.HttpContext?.Request?.Path.Value?.ToLower();
+    var isAuthenticated = HttpContextAccessor.HttpContext?.User.Identity?.IsAuthenticated ?? false;
+    var isAdmin = HttpContextAccessor.HttpContext?.User.IsInRole("Admin") ?? false;
+    var isAuthor = HttpContextAccessor.HttpContext?.User.IsInRole("Author") ?? false;
 }
 
-<div class="sidebar py-4 pe-md-0 pe-lg-4 d-flex flex-column h-100">
+<div class="sidebar py-4 pe-md-0 pe-lg-4 d-flex flex-column h-100 border-end">
     <div class="mb-auto">
         <ul class="nav nav-pills flex-column">
-            
+
             <li class="nav-item">
                 <a asp-area="" asp-controller="Home" asp-action="Index"
                    class="nav-link d-flex align-items-center">
@@ -25,9 +28,9 @@
             <li class="nav-item">
                 <a asp-area="Public" asp-controller="Blog" asp-action="Index"
                    class="nav-link d-flex align-items-center @(currentPath == "/blog" ? "active" : "")">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" 
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                          stroke-linejoin="round" class="bi bi-feather me-lg-3" viewBox="0 0 16 16">
-                        <path d="M15.807.531c-.174-.177-.41-.289-.64-.363a3.8 3.8 0 0 0-.833-.15c-.62-.049-1.394 0-2.252.175C10.365.545 8.264 1.415 6.315 3.1S3.147 6.824 2.557 8.523c-.294.847-.44 1.634-.429 2.268.005.316.05.62.154.88q.025.061.056.122A68 68 0 0 0 .08 15.198a.53.53 0 0 0 .157.72.504.504 0 0 0 .705-.16 68 68 0 0 1 2.158-3.26c.285.141.616.195.958.182.513-.02 1.098-.188 1.723-.49 1.25-.605 2.744-1.787 4.303-3.642l1.518-1.55a.53.53 0 0 0 0-.739l-.729-.744 1.311.209a.5.5 0 0 0 .443-.15l.663-.684c.663-.68 1.292-1.325 1.763-1.892.314-.378.585-.752.754-1.107.163-.345.278-.773.112-1.188a.5.5 0 0 0-.112-.172M3.733 11.62C5.385 9.374 7.24 7.215 9.309 5.394l1.21 1.234-1.171 1.196-.027.03c-1.5 1.789-2.891 2.867-3.977 3.393-.544.263-.99.378-1.324.39a1.3 1.3 0 0 1-.287-.018Zm6.769-7.22c1.31-1.028 2.7-1.914 4.172-2.6a7 7 0 0 1-.4.523c-.442.533-1.028 1.134-1.681 1.804l-.51.524zm3.346-3.357C9.594 3.147 6.045 6.8 3.149 10.678c.007-.464.121-1.086.37-1.806.533-1.535 1.65-3.415 3.455-4.976 1.807-1.561 3.746-2.36 5.31-2.68a8 8 0 0 1 1.564-.173"/>
+                        <path d="M15.807.531c-.174-.177-.41-.289-.64-.363a3.8 3.8 0 0 0-.833-.15c-.62-.049-1.394 0-2.252.175C10.365.545 8.264 1.415 6.315 3.1S3.147 6.824 2.557 8.523c-.294.847-.44 1.634-.429 2.268.005.316.05.62.154.88q.025.061.056.122A68 68 0 0 0 .08 15.198a.53.53 0 0 0 .157.72.504.504 0 0 0 .705-.16 68 68 0 0 1 2.158-3.26c.285.141.616.195.958.182.513-.02 1.098-.188 1.723-.49 1.25-.605 2.744-1.787 4.303-3.642l1.518-1.55a.53.53 0 0 0 0-.739l-.729-.744 1.311.209a.5.5 0 0 0 .443-.15l.663-.684c.663-.68 1.292-1.325 1.763-1.892.314-.378.585-.752.754-1.107.163-.345.278-.773.112-1.188a.5.5 0 0 0-.112-.172M3.733 11.62C5.385 9.374 7.24 7.215 9.309 5.394l1.21 1.234-1.171 1.196-.027.03c-1.5 1.789-2.891 2.867-3.977 3.393-.544.263-.99.378-1.324.39a1.3 1.3 0 0 1-.287-.018Zm6.769-7.22c1.31-1.028 2.7-1.914 4.172-2.6a7 7 0 0 1-.4.523c-.442.533-1.028 1.134-1.681 1.804l-.51.524zm3.346-3.357C9.594 3.147 6.045 6.8 3.149 10.678c.007-.464.121-1.086.37-1.806.533-1.535 1.65-3.415 3.455-4.976 1.807-1.561 3.746-2.36 5.31-2.68a8 8 0 0 1 1.564-.173" />
                     </svg>
                     <span class="d-none d-lg-inline">Bloglar</span>
                 </a>
@@ -36,9 +39,9 @@
             <li class="nav-item">
                 <a asp-area="Public" asp-controller="Category" asp-action="Index"
                    class="nav-link d-flex align-items-center @(currentPath == "/category" ? "active" : "")">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" 
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                          stroke-linejoin="round" class="bi bi-grid-3x3-gap me-lg-3" viewBox="0 0 16 16">
-                        <path d="M4 2v2H2V2zm1 12v-2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1m0-5V7a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1m0-5V2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1m5 10v-2a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1m0-5V7a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1m0-5V2a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1M9 2v2H7V2zm5 0v2h-2V2zM4 7v2H2V7zm5 0v2H7V7zm5 0h-2v2h2zM4 12v2H2v-2zm5 0v2H7v-2zm5 0v2h-2v-2zM12 1a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zm-1 6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1zm1 4a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1z"/>
+                        <path d="M4 2v2H2V2zm1 12v-2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1m0-5V7a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1m0-5V2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1m5 10v-2a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1m0-5V7a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1m0-5V2a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1M9 2v2H7V2zm5 0v2h-2V2zM4 7v2H2V7zm5 0v2H7V7zm5 0h-2v2h2zM4 12v2H2v-2zm5 0v2H7v-2zm5 0v2h-2v-2zM12 1a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zm-1 6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1zm1 4a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1z" />
                     </svg>
                     <span class="d-none d-lg-inline">Kategoriler</span>
                 </a>
@@ -47,93 +50,65 @@
             <li class="nav-item">
                 <a asp-area="Public" asp-controller="Tag" asp-action="Index"
                    class="nav-link d-flex align-items-center @(currentPath == "/tags" ? "active" : "")">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" 
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                          stroke-linejoin="round" class="bi bi-tags me-lg-3" viewBox="0 0 16 16">
-                        <path d="M3 2v4.586l7 7L14.586 9l-7-7zM2 2a1 1 0 0 1 1-1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 2 6.586z"/>
-                        <path d="M5.5 5a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1m0 1a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3M1 7.086a1 1 0 0 0 .293.707L8.75 15.25l-.043.043a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 0 7.586V3a1 1 0 0 1 1-1z"/>
+                        <path d="M3 2v4.586l7 7L14.586 9l-7-7zM2 2a1 1 0 0 1 1-1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 2 6.586z" />
+                        <path d="M5.5 5a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1m0 1a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3M1 7.086a1 1 0 0 0 .293.707L8.75 15.25l-.043.043a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 0 7.586V3a1 1 0 0 1 1-1z" />
                     </svg>
                     <span class="d-none d-lg-inline">Etiketler</span>
                 </a>
             </li>
 
-            <li class="nav-item">
-                <a asp-area="Auth" asp-controller="Auth" asp-action="Profile"
-                   class="nav-link d-flex align-items-center @(currentPath == "/profile" ? "active" : "")">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                         stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                         stroke-linejoin="round" class="me-lg-3">
-                        <circle cx="12" cy="8" r="5"></circle>
-                        <path d="M20 21a8 8 0 1 0-16 0"></path>
-                    </svg>
-                    <span class="d-none d-lg-inline">Profil</span>
-                </a>
-            </li>
-
-            @if (HttpContextAccessor.HttpContext?.User.IsInRole("Admin") == true)
+            @if (isAuthenticated)
             {
                 <li class="nav-item">
-                    <span class="text-muted fw-bold small">Admin Panel</span>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link d-flex align-items-center @(currentPath == "/admin/category" ? "active" : "")" asp-area="Admin" asp-controller="Category" asp-action="Index">
+                    <a asp-area="Auth" asp-controller="Auth" asp-action="Profile"
+                       class="nav-link d-flex align-items-center @(currentPath == "/profile" ? "active" : "")">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                              stroke="currentColor" stroke-width="2" stroke-linecap="round"
                              stroke-linejoin="round" class="me-lg-3">
                             <circle cx="12" cy="8" r="5"></circle>
                             <path d="M20 21a8 8 0 1 0-16 0"></path>
                         </svg>
-                        <span class="d-none d-lg-inline">Kategori Yönetimi</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link d-flex align-items-center @(currentPath == "/admin/tag" ? "active" : "")" asp-area="Admin" asp-controller="Tag" asp-action="Index">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                             stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                             stroke-linejoin="round" class="me-lg-3">
-                            <circle cx="12" cy="8" r="5"></circle>
-                            <path d="M20 21a8 8 0 1 0-16 0"></path>
-                        </svg>
-                        <span class="d-none d-lg-inline">Etiket Yönetimi</span>
+                        <span class="d-none d-lg-inline">Profil</span>
                     </a>
                 </li>
             }
 
-            @if (HttpContextAccessor.HttpContext?.User.IsInRole("Author") == true)
+            @if (isAdmin)
             {
                 <li class="nav-item">
-                    <span class="text-muted fw-bold small">Yazar Panel</span>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link d-flex align-items-center @(currentPath == "/author/blog" ? "active" : "")" asp-area="Author" asp-controller="Blog" asp-action="Index">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                             stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                             stroke-linejoin="round" class="me-lg-3">
-                            <circle cx="12" cy="8" r="5"></circle>
-                            <path d="M20 21a8 8 0 1 0-16 0"></path>
-                        </svg>
-                        <span class="d-none d-lg-inline">Bloglarım</span>
+                    <a class="nav-link d-flex align-items-center" data-bs-toggle="collapse" href="#adminMenu" role="button" aria-expanded="false">
+                        <i class="bi bi-shield-lock me-lg-3"></i>
+                        <span class="d-none d-lg-inline">Admin Panel</span>
                     </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link d-flex align-items-center @(currentPath == "/author/blog/create" ? "active" : "")" asp-area="Author" asp-controller="Blog" asp-action="Create">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                             stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                             stroke-linejoin="round" class="me-lg-3">
-                            <circle cx="12" cy="8" r="5"></circle>
-                            <path d="M20 21a8 8 0 1 0-16 0"></path>
-                        </svg>
-                        <span class="d-none d-lg-inline">Blog Yaz</span>
-                    </a>
+                    <div class="collapse ps-4" id="adminMenu">
+                        <a asp-area="Admin" asp-controller="Category" asp-action="Index" class="nav-link d-flex align-items-center @(currentPath == "/admin/category" ? "active" : "")">Kategori Yönetimi</a>
+                        <a asp-area="Admin" asp-controller="Tag" asp-action="Index" class="nav-link d-flxe align-items-center @(currentPath == "/admin/tag" ? "active" : "")">Etiket Yönetimi</a>
+                    </div>
                 </li>
             }
 
+            @if (isAuthor)
+            {
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center" data-bs-toggle="collapse" href="#authorMenu" role="button" aria-expanded="false">
+                        <i class="bi bi-pencil-square me-lg-3"></i>
+                        <span class="d-none d-lg-inline">Yazar Panel</span>
+                    </a>
+                    <div class="collapse ps-4" id="authorMenu">
+                        <a asp-area="Author" asp-controller="Blog" asp-action="Index" class="nav-link @(currentPath == "/author/blog" ? "active" : "")">Bloglarım</a>
+                        <a asp-area="Author" asp-controller="Blog" asp-action="Create" class="nav-link @(currentPath == "/author/blog/create" ? "active" : "")">Blog Yaz</a>
+                    </div>
+                </li>
+            }
         </ul>
-    </div>
-
-    <div class="mt-auto">
-        <a asp-area="Author" asp-controller="Blog" asp-action="Create" class="btn btn-primary w-100">
-            <span class="d-none d-lg-inline">Blog Yayınla</span>
-            <span class="d-lg-none">+</span>
-        </a>
+        @if (!isAuthenticated)
+        {
+            <div class="d-flex gap-2 mt-3">
+                <a class="btn btn-primary w-50 rounded-pill" asp-area="Auth" asp-controller="Auth" asp-action="Login">Giriş Yap</a>
+                <a class="btn btn-outline-primary w-50 rounded-pill" asp-area="Auth" asp-controller="Auth" asp-action="Register">Kayıt Ol</a>
+            </div>
+        }
     </div>
 </div>
