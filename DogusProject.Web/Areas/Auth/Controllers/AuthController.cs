@@ -1,4 +1,6 @@
 ﻿using DogusProject.Application.Common;
+using DogusProject.Application.Features.Users.Dtos;
+using DogusProject.Web.Controllers;
 using DogusProject.Web.Models.Auth.DTOs;
 using DogusProject.Web.Models.Auth.ViewModels;
 using DogusProject.Web.Models.Blog.DTOs;
@@ -12,7 +14,7 @@ using System.Security.Claims;
 namespace DogusProject.Web.Areas.Auth.Controllers
 {
 	[Area("Auth")]
-	public class AuthController : Controller
+	public class AuthController : BaseController
 	{
 		private readonly HttpClient _client;
 
@@ -268,6 +270,63 @@ namespace DogusProject.Web.Areas.Auth.Controllers
 			};
 
 			return View(model);
+		}
+
+		[HttpGet("edit-profile")]
+		public async Task<IActionResult> EditProfile()
+		{
+			var userId = CurrentUserId;
+			var profileResponse = await _client.GetAsync($"user/profile/{userId}");
+
+			if (!profileResponse.IsSuccessStatusCode)
+			{
+				TempData["Error"] = "Profil bilgileri alınamadı.";
+				return RedirectToAction("Profile");
+			}
+
+			var profileResult = await profileResponse.Content.ReadFromJsonAsync<Result<UserProfileDto>>();
+
+			var model = new EditProfileViewModel
+			{
+				UserId = (Guid)userId,
+				FirstName = profileResult.Data.FirstName,
+				LastName = profileResult.Data.LastName,
+				Bio = profileResult.Data.Bio,
+				Location = profileResult.Data.Location,
+				Website = profileResult.Data.Website
+			};
+
+			return View(model);
+		}
+
+		[HttpPost("edit-profile")]
+		public async Task<IActionResult> EditProfile(EditProfileViewModel model)
+		{
+			if (!ModelState.IsValid)
+			{
+				return View(model);
+			}
+
+			var dto = new UpdateProfileDto
+			{
+				UserId = model.UserId,
+				FirstName = model.FirstName,
+				LastName = model.LastName,
+				Bio = model.Bio,
+				Location = model.Location,
+				Website = model.Website
+			};
+
+			SetAuthorizationHeader(_client);
+			var response = await _client.PutAsJsonAsync("user/edit-profile", dto);
+
+			if (!response.IsSuccessStatusCode)
+			{
+				ModelState.AddModelError(string.Empty, "Profil güncellenemedi.");
+				return HandleApiFailure("Profil güncellenemedi.", response);
+			}
+
+			return RedirectToAction("Profile");
 		}
 
 	}
