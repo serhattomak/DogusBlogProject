@@ -10,7 +10,6 @@ public class CommentConfiguration : IEntityTypeConfiguration<Comment>
 	{
 		builder.HasKey(c => c.Id);
 		builder.Property(c => c.Content).IsRequired().HasMaxLength(1000);
-		builder.Property(c => c.CreatedAt).IsRequired();
 
 		builder.HasOne(c => c.Blog)
 			.WithMany(b => b.Comments)

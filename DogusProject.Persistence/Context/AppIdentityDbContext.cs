@@ -14,6 +14,7 @@ public class AppIdentityDbContext : IdentityDbContext<AppUser, AppRole, Guid>
 
 	public DbSet<Blog> Blogs => Set<Blog>();
 	public DbSet<BlogTag> BlogTags => Set<BlogTag>();
+	public DbSet<BlogImage> BlogImages => Set<BlogImage>();
 	public DbSet<Category> Categories => Set<Category>();
 	public DbSet<Comment> Comments => Set<Comment>();
 	public DbSet<Tag> Tags => Set<Tag>();
