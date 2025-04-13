@@ -206,7 +206,8 @@ body {
 }
 
 .sidebar {
-    min-height: calc(100vh - 60px);
+    max-height: calc(100vh - 60px);
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -243,4 +244,15 @@ body {
 .sidebar .collapse .nav-link.active {
     background-color: #0d6efd;
     color: white;
+}
+
+.count-badge {
+    background-color: var(--twitter-extra-light-gray);
+    color: var(--twitter-dark-gray);
+    font-size: 0.8rem;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    min-width: 28px;
+    text-align: center;
+    font-weight: 500;
 }

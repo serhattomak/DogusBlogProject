@@ -1,7 +1,7 @@
-﻿using DogusProject.Web.Models.Category.DTOs;
+﻿using DogusProject.Application.Features.Categories.Dtos;
+using DogusProject.Application.Features.Tags.Dtos;
 using DogusProject.Web.Models.Common;
 using DogusProject.Web.Models.Sidebar.ViewModels;
-using DogusProject.Web.Models.Tag.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DogusProject.Web.ViewComponents;
@@ -17,18 +17,22 @@ public class RightSidebarViewComponent : ViewComponent
 
 	public async Task<IViewComponentResult> InvokeAsync()
 	{
-		var categoriesResponse = await _client.GetAsync("category");
-		var tagsResponse = await _client.GetAsync("tag");
+		var vm = new RightSidebarViewModel();
 
-		var categoriesResult = await categoriesResponse.Content.ReadFromJsonAsync<Result<List<CategoryDto>>>();
-		var tagsResult = await tagsResponse.Content.ReadFromJsonAsync<Result<List<TagDto>>>();
-
-		var viewModel = new RightSidebarViewModel
+		var categoryResponse = await _client.GetAsync("category/popular");
+		if (categoryResponse.IsSuccessStatusCode)
 		{
-			PopularCategories = categoriesResult?.Data?.Take(5).OrderByDescending(x => x.CreatedAt).ToList() ?? new(),
-			PopularTags = tagsResult?.Data?.Take(10).OrderByDescending(x => x.CreatedAt).ToList() ?? new()
-		};
+			var result = await categoryResponse.Content.ReadFromJsonAsync<Result<List<PopularCategoryDto>>>();
+			vm.PopularCategories = result?.Data?.Take(5).ToList() ?? new();
+		}
 
-		return View(viewModel);
+		var tagResponse = await _client.GetAsync("tag/popular");
+		if (tagResponse.IsSuccessStatusCode)
+		{
+			var result = await tagResponse.Content.ReadFromJsonAsync<Result<List<PopularTagDto>>>();
+			vm.PopularTags = result?.Data?.Take(10).ToList() ?? new();
+		}
+
+		return View(vm);
 	}
 }

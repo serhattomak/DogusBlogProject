@@ -39,11 +39,15 @@ public class MappingProfile : Profile
 		CreateMap<CreateCategoryDto, Category>();
 		CreateMap<CreateCategoryCommand, Category>();
 		CreateMap<UpdateCategoryCommand, Category>();
+		CreateMap<Category, PopularCategoryDto>()
+			.ForMember(dest => dest.BlogCount, opt => opt.MapFrom(src => src.Blogs.Count));
 
 		// Tag
 		CreateMap<CreateTagCommand, Tag>();
 		CreateMap<UpdateTagCommand, Tag>();
 		CreateMap<Tag, TagDto>().ReverseMap();
+		CreateMap<Tag, PopularTagDto>()
+			.ForMember(dest => dest.BlogCount, opt => opt.MapFrom(src => src.BlogTags.Count));
 
 		// Comment
 		CreateMap<CreateCommentCommand, Comment>();

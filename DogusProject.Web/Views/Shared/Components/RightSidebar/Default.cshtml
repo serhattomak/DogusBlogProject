@@ -1,28 +1,32 @@
 ﻿@model DogusProject.Web.Models.Sidebar.ViewModels.RightSidebarViewModel
 
 <div class="sidebar py-4 ps-md-3 border-start">
-    <div class="mb-4">
+    <div class="mb-auto">
         <h6 class="text-muted text-uppercase fw-bold mb-3">Popüler Kategoriler</h6>
         <ul class="nav nav-pills flex-column">
             @foreach (var category in Model.PopularCategories)
             {
                 <li class="nav-item">
-                    <a asp-area="Public" asp-controller="Category" asp-action="BlogsByCategory" asp-route-id="@category.Id" class="nav-link d-flex align-items-center">
+                    <a asp-area="Public" asp-controller="Category" asp-action="BlogsByCategory" asp-route-id="@category.Id" class="nav-link d-flex justify-content-between align-items-center">
                         <span>@category.Name</span>
+                        <span class="badge bg-primary rounded-pill ms-3">@category.BlogCount</span>
                     </a>
                 </li>
             }
         </ul>
     </div>
 
-    <div class="mb-4">
+    <div class="mb-auto">
         <h6 class="text-muted text-uppercase fw-bold mb-3">Popüler Etiketler</h6>
         <ul class="nav nav-pills flex-column">
             @foreach (var tag in Model.PopularTags)
             {
-                <li class="nav-item"><a asp-area="Public" asp-controller="Tag" asp-action="BlogsByTag" asp-route-id="@tag.Id" class="nav-link d-flex align-items-center">
-                    <span>#@tag.Name</span>
-                </a></li>
+                <li class="nav-item">
+                    <a asp-area="Public" asp-controller="Tag" asp-action="BlogsByTag" asp-route-id="@tag.Id" class="nav-link d-flex justify-content-between align-items-center">
+                        <span>#@tag.Name</span>
+                        <span class="badge bg-primary rounded-pill ms-3">@tag.BlogCount</span>
+                    </a>
+                </li>
             }
         </ul>
     </div>

@@ -57,5 +57,13 @@ namespace DogusProject.API.Controllers
 			var result = await _mediator.Send(new DeleteCategoryCommand(id));
 			return result.Success ? Ok(result) : BadRequest(result);
 		}
+
+		[HttpGet("popular")]
+		[AllowAnonymous]
+		public async Task<IActionResult> GetPopularCategories()
+		{
+			var result = await _mediator.Send(new GetPopularCategoriesQuery());
+			return result.Success ? Ok(result) : BadRequest(result);
+		}
 	}
 }

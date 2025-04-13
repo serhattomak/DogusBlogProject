@@ -57,5 +57,12 @@ namespace DogusProject.API.Controllers
 			var result = await _mediator.Send(new DeleteTagCommand(id));
 			return result.Success ? Ok(result) : BadRequest(result);
 		}
+		[HttpGet("popular")]
+		[AllowAnonymous]
+		public async Task<IActionResult> GetPopularTags()
+		{
+			var result = await _mediator.Send(new GetPopularTagsQuery());
+			return result.Success ? Ok(result) : NotFound(result);
+		}
 	}
 }
