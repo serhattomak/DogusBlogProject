@@ -1,8 +1,7 @@
 ﻿using DogusProject.Application.Common;
-using DogusProject.Application.Common.Pagination;
-using DogusProject.Application.Features.Blogs.Dtos;
 using DogusProject.Web.Models.Auth.DTOs;
 using DogusProject.Web.Models.Auth.ViewModels;
+using DogusProject.Web.Models.Blog.DTOs;
 using DogusProject.Web.Models.Comment.DTOs;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -223,7 +222,7 @@ namespace DogusProject.Web.Areas.Auth.Controllers
 
 			Result<UserInfoDto>? userResult = null;
 			Result<List<string>>? rolesResult = null;
-			Result<PagedResult<BlogResponseDto>>? blogsResult = null;
+			Result<List<BlogResponseDto>>? blogsResult = null;
 			Result<List<CommentResponseDto>>? commentsResult = null;
 
 			try
@@ -236,9 +235,9 @@ namespace DogusProject.Web.Areas.Auth.Controllers
 				rolesResponse.EnsureSuccessStatusCode();
 				rolesResult = await rolesResponse.Content.ReadFromJsonAsync<Result<List<string>>>();
 
-				var blogsResponse = await _client.GetAsync($"blog/by-author/{userId}?page=1&pageSize=10");
+				var blogsResponse = await _client.GetAsync($"blog/by-author-info/{userId}");
 				blogsResponse.EnsureSuccessStatusCode();
-				blogsResult = await blogsResponse.Content.ReadFromJsonAsync<Result<PagedResult<BlogResponseDto>>>();
+				blogsResult = await blogsResponse.Content.ReadFromJsonAsync<Result<List<BlogResponseDto>>>();
 
 				var commentsResponse = await _client.GetAsync($"comment/by-user/{userId}");
 				commentsResponse.EnsureSuccessStatusCode();
@@ -255,9 +254,17 @@ namespace DogusProject.Web.Areas.Auth.Controllers
 			{
 				UserName = userResult?.Data?.UserName ?? "Bilinmiyor",
 				Email = userResult?.Data?.Email ?? "Bilinmiyor",
-				Roles = rolesResult?.Data ?? new(),
-				Blogs = blogsResult?.Data?.Items ?? new(),
-				Comments = commentsResult?.Data ?? new()
+				FullName = userResult?.Data?.FullName ?? "",
+				FirstName = userResult?.Data?.FirstName ?? "",
+				LastName = userResult?.Data?.LastName ?? "",
+				Bio = userResult?.Data?.Bio,
+				Location = userResult?.Data?.Location,
+				Website = userResult?.Data?.Website,
+				AvatarUrl = userResult?.Data?.AvatarUrl ?? "/images/default-avatar.png",
+				JoinedDate = userResult?.Data?.CreatedAt ?? DateTime.UtcNow,
+				Blogs = blogsResult?.Data ?? new(),
+				Comments = commentsResult?.Data ?? new(),
+				PostCount = blogsResult?.Data?.Count ?? 0
 			};
 
 			return View(model);

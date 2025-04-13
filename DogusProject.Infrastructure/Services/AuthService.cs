@@ -178,7 +178,15 @@ public class AuthService : IAuthService
 		{
 			Id = user.Id,
 			UserName = user.UserName,
-			Email = user.Email
+			Email = user.Email,
+			FirstName = user.FirstName,
+			LastName = user.LastName,
+			FullName = user.FullName,
+			Bio = user.Bio,
+			AvatarUrl = user.AvatarUrl,
+			Location = user.Location,
+			Website = user.Website,
+			CreatedAt = user.CreatedAt
 		};
 
 		return Result<UserInfoDto>.SuccessResult(dto);

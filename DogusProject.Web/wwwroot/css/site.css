@@ -75,14 +75,21 @@ body {
     border: none;
     border-bottom: 2px solid transparent;
     padding: 10px 20px;
+    transition: background-color 0.2s, color 0.2s;
 }
 
     .nav-tabs .nav-link.active {
-        color: var(--twitter-blue);
-        border: none;
-        border-bottom: 2px solid var(--twitter-blue);
+        color: var(--twitter-blue) !important;
+        background-color: #fff !important;
+        border: 1px solid var(--twitter-extra-light-gray);
+        border-bottom-color: transparent;
         font-weight: 600;
     }
+
+.nav-tabs .nav-link:hover {
+    color: var(--twitter-blue);
+    background-color: #f0f8ff;
+}
 
 /* Create blog section styling */
 .create-blog-container {

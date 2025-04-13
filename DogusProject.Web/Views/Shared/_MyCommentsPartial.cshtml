@@ -1,0 +1,24 @@
+﻿@model List<DogusProject.Web.Models.Comment.DTOs.CommentResponseDto>
+
+@if (!Model.Any())
+{
+    <div class="card">
+        <div class="card-body text-center text-secondary">
+            Henüz yorum yapmadınız.
+        </div>
+    </div>
+}
+else
+{
+    @foreach (var comment in Model)
+    {
+        <div class="card mb-3">
+            <div class="card-body">
+                <p class="mb-2">@comment.Content</p>
+                <small class="text-muted">
+                    @comment.CreatedAt.ToString("dd MMMM yyyy HH:mm") | Blog: <a asp-area="Public" asp-controller="Blog" asp-action="Detail" asp-route-id="@comment.BlogId"><strong>@comment.BlogTitle</strong></a>
+                </small>
+            </div>
+        </div>
+    }
+}

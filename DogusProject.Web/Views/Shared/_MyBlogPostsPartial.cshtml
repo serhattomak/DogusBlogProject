@@ -1,0 +1,46 @@
+﻿@model List<DogusProject.Web.Models.Blog.DTOs.BlogResponseDto>
+
+@foreach (var blog in Model)
+{
+    <div class="card mb-3 twitter-card">
+        <div class="card-body">
+            <div class="d-flex">
+                <div class="me-3">
+                    <img src="@(!string.IsNullOrEmpty(blog.AuthorAvatarUrl) ? blog.AuthorAvatarUrl : "/images/default-avatar.png")"
+                         alt="Author Avatar"
+                         class="rounded-circle"
+                         width="48" height="48" />
+                </div>
+                <div class="flex-grow-1">
+                    <div class="d-flex align-items-center mb-1">
+                        <span class="fw-bold blog-post-author me-2">@blog.AuthorFullName</span>
+                        <span class="blog-post-timestamp">· @blog.CreatedAt.ToString("dd MMM yyyy")</span>
+                    </div>
+
+                    <h2 class="fw-bold fs-5 mb-1">@blog.Title</h2>
+                    <p class="blog-post-content text-truncate">@blog.Content</p>
+
+                    @if (blog.ImageUrls != null && blog.ImageUrls.Any())
+                    {
+                        <div class="row mb-2">
+                            @foreach (var imageUrl in blog.ImageUrls.Take(4))
+                            {
+                                <div class="col-6 col-md-3 mb-2">
+                                    <img src="@imageUrl" alt="Blog Görseli" class="img-fluid rounded" />
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    <div class="blog-post-tags mb-2">
+                        <span class="badge bg-secondary text-white">@blog.CategoryName</span>
+                    </div>
+                    
+                    <a asp-area="Public" asp-controller="Blog" asp-action="Detail" asp-route-id="@blog.Id" class="btn btn-outline-primary btn-sm rounded-pill">
+                        Detaylar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+}

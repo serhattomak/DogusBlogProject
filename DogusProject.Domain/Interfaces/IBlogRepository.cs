@@ -10,5 +10,8 @@ public interface IBlogRepository : IRepository<Blog>
 	Task<List<Blog>> GetBlogsByTagIdAsync(Guid tagId);
 	Task<List<Blog>> GetBlogsByAuthorIdAsync(Guid userId);
 	Task<Blog?> GetByIdWithCategoryAndTagsAsync(Guid id);
+
+	Task<List<(Blog Blog, string? AuthorFullName, string? AuthorAvatarUrl)>>
+		GetBlogsWithAuthorInfoByAuthorIdAsync(Guid authorId);
 	Task RemoveBlogTagsAsync(Guid blogId);
 }

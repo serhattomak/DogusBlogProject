@@ -18,8 +18,8 @@ public class MappingProfile : Profile
 		// Blog
 		CreateMap<Blog, BlogResponseDto>()
 			.ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
-			.ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.BlogTags.Select(bt => bt.Tag.Name)))
-			.ForMember(dest => dest.Author, opt => opt.Ignore());
+			.ForMember(dest => dest.ImageUrls, opt => opt.MapFrom(src => src.BlogImages.Select(bi => bi.ImageUrl).ToList()));
+
 
 		CreateMap<CreateBlogDto, Blog>()
 			.ForMember(dest => dest.BlogTags, opt => opt.Ignore());

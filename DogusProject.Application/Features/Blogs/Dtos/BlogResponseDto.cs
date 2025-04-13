@@ -5,14 +5,14 @@ namespace DogusProject.Application.Features.Blogs.Dtos;
 public class BlogResponseDto
 {
 	public Guid Id { get; set; }
-	public string Title { get; set; } = null!;
-	public string Content { get; set; } = null!;
-	public string CategoryName { get; set; } = null!;
-	public List<string> Tags { get; set; } = new();
-	public string? ImagePath { get; set; }
-	public Guid UserId { get; set; }
-	public string Author { get; set; } = null!;
-	public DateTime? PublishedAt { get; set; }
+	public string Title { get; set; } = default!;
+	public string Content { get; set; } = default!;
 	public DateTime CreatedAt { get; set; }
-	public BlogStatus Status { get; set; }
+	public string? AuthorFullName { get; set; }
+	public string? AuthorAvatarUrl { get; set; }
+	public Guid CategoryId { get; set; }
+	public string? CategoryName { get; set; }
+	public List<string> Tags { get; set; } = new();
+	public List<string> ImageUrls { get; set; } = new();
+	public BlogStatus Status { get; set; } = default!;
 }

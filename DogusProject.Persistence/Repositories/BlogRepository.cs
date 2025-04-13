@@ -1,11 +1,13 @@
 ﻿using DogusProject.Domain.Entities;
 using DogusProject.Domain.Interfaces;
+using DogusProject.Infrastructure.Identity;
 using DogusProject.Persistence.Context;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace DogusProject.Persistence.Repositories;
 
-public class BlogRepository(AppIdentityDbContext context) : EfRepository<Blog>(context), IBlogRepository
+public class BlogRepository(AppIdentityDbContext context, UserManager<AppUser> userManager) : EfRepository<Blog>(context), IBlogRepository
 {
 	private readonly AppIdentityDbContext _context = context;
 
@@ -91,7 +93,25 @@ public class BlogRepository(AppIdentityDbContext context) : EfRepository<Blog>(c
 			.ThenInclude(bt => bt.Tag)
 			.FirstOrDefaultAsync(b => b.Id == id);
 	}
+	public async Task<List<(Blog Blog, string? AuthorFullName, string? AuthorAvatarUrl)>> GetBlogsWithAuthorInfoByAuthorIdAsync(Guid authorId)
+	{
+		var blogs = await _context.Blogs
+			.Where(b => b.UserId == authorId)
+			.Include(b => b.BlogImages)
+			.Include(b => b.Category)
+			.ToListAsync();
 
+		var result = new List<(Blog, string?, string?)>();
+
+		foreach (var blog in blogs)
+		{
+			var user = await _context.Users.FindAsync(blog.UserId);
+			var fullName = user is null ? null : $"{user.FirstName} {user.LastName}";
+			result.Add((blog, fullName, user?.AvatarUrl));
+		}
+
+		return result;
+	}
 	public async Task RemoveBlogTagsAsync(Guid blogId)
 	{
 		var tags = await _context.BlogTags

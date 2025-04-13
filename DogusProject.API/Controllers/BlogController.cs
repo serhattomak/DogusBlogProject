@@ -114,5 +114,13 @@ namespace DogusProject.API.Controllers
 
 			return result.Success ? Ok(result) : BadRequest(result);
 		}
+
+		[HttpGet("by-author-info/{userId}")]
+		[AllowAnonymous]
+		public async Task<IActionResult> GetBlogsWithAuthor(Guid userId)
+		{
+			var result = await _mediator.Send(new GetBlogsWithAuthorQuery(userId));
+			return result.Success ? Ok(result) : BadRequest(result);
+		}
 	}
 }
