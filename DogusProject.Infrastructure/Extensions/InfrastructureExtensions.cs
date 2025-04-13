@@ -10,6 +10,7 @@ public static class InfrastructureExtensions
 	public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
 	{
 		services.AddScoped<IFileService, FileService>();
+		services.AddScoped<IUserService, UserService>();
 		return services;
 	}
 }
