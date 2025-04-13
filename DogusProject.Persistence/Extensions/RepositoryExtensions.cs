@@ -19,6 +19,7 @@ public static class RepositoryExtensions
 		services.AddScoped<ICommentRepository, CommentRepository>();
 		services.AddScoped<ICategoryRepository, CategoryRepository>();
 		services.AddScoped<ITagRepository, TagRepository>();
+		services.AddScoped<IBlogImageRepository, BlogImageRepository>();
 
 		return services;
 	}

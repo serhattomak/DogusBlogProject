@@ -1,4 +1,5 @@
 ﻿using DogusProject.Application.Common;
+using DogusProject.Application.Features.BlogImages.Dtos;
 using MediatR;
 
 namespace DogusProject.Application.Features.BlogImages.Queries;
