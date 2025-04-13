@@ -21,6 +21,7 @@ namespace DogusProject.API.Controllers
 		[Authorize(Roles = "Author,Admin")]
 		public async Task<IActionResult> UploadBlogImages([FromRoute] Guid blogId, [FromForm] List<IFormFile> images)
 		{
+			Console.WriteLine($"Gelen görsel sayısı: {images?.Count}");
 			var command = new CreateBlogImageCommand
 			{
 				BlogId = blogId,

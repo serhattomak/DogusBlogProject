@@ -7,7 +7,7 @@
 
 <h2>Blog Düzenle</h2>
 
-<form asp-area="Author" asp-controller="Blog" asp-action="Edit" asp-route-id="@Model.Id" method="post">
+<form asp-area="Author" asp-controller="Blog" asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
     @Html.AntiForgeryToken()
 
     <div class="mb-3">
@@ -47,6 +47,30 @@
         <label class="form-label" for="NewTags">Yeni Etiketler (virgül ile ayırarak yazın)</label>
         <input type="text" name="NewTags" class="form-control" placeholder="örneğin: yeniEtiket1, yeniEtiket2" />
     </div>
+    
+    <div class="mb-3">
+        <label class="form-label">Yeni Görsel Yükle</label>
+        <input type="file" name="Images" class="form-control" id="imageUploadInput" multiple accept="image/*" />
+        <div id="imagePreviewContainer" class="d-flex flex-wrap gap-2 mt-3"></div>
+    </div>
+    
+    @if (Model.ExistingImageUrls != null && Model.ExistingImageUrls.Any())
+    {
+        <div class="mb-3">
+            <label class="form-label">Mevcut Görseller</label>
+            <div class="d-flex flex-wrap gap-2">
+                @foreach (var imageUrl in Model.ExistingImageUrls)
+                {
+                    <div class="position-relative">
+                        <img src="@imageUrl" class="rounded" style="width:100px;height:100px;object-fit:cover;" />
+                        <!-- <form asp-controller="BlogImage" asp-action="Delete" asp-route-id="IMAGE_ID" method="post">
+                            <button class="btn btn-sm btn-danger position-absolute top-0 end-0">×</button></form>
+                        -->
+                    </div>
+                }
+            </div>
+        </div>
+    }
 
     <button type="submit" class="btn btn-success rounded-pill">Güncelle</button>
     <a asp-action="Index" class="btn btn-secondary rounded-pill">İptal</a>
@@ -54,4 +78,31 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const input = document.getElementById('imageUploadInput');
+            const previewContainer = document.getElementById('imagePreviewContainer');
+
+            input?.addEventListener('change', function () {
+                previewContainer.innerHTML = '';
+
+                if (this.files) {
+                    Array.from(this.files).forEach(file => {
+                        if (!file.type.startsWith('image/')) return;
+
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            const img = document.createElement('img');
+                            img.src = e.target.result;
+                            img.classList.add('img-thumbnail');
+                            img.style.height = '100px';
+                            img.style.objectFit = 'cover';
+                            previewContainer.appendChild(img);
+                        }
+                        reader.readAsDataURL(file);
+                    });
+                }
+            });
+        });
+    </script>
 }

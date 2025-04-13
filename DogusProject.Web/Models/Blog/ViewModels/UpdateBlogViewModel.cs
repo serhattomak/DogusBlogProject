@@ -21,4 +21,6 @@ public class UpdateBlogViewModel
 	public List<TagDto> AvailableTags { get; set; } = new();
 	public string? NewTags { get; set; }
 	public List<CategoryDto> Categories { get; set; } = new();
+	public List<IFormFile>? Images { get; set; }
+	public List<string> ExistingImageUrls { get; set; } = new();
 }

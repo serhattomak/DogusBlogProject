@@ -1,4 +1,5 @@
-﻿using DogusProject.Web.Controllers;
+﻿using DogusProject.Application.Features.BlogImages.Dtos;
+using DogusProject.Web.Controllers;
 using DogusProject.Web.Models.Blog.ViewModels;
 using DogusProject.Web.Models.Category.DTOs;
 using DogusProject.Web.Models.Common;
@@ -128,7 +129,31 @@ namespace DogusProject.Web.Areas.Author.Controllers
 			{
 				ModelState.AddModelError(string.Empty, "Blog oluşturulamadı.");
 				await PrepareViewModelAsync(model);
-				return HandleApiFailure("Blog oluşturulamadı.", model);
+				return View(model);
+			}
+
+			var createdBlogResult = await response.Content.ReadFromJsonAsync<Result<Guid>>();
+			if (createdBlogResult == null || !createdBlogResult.Success)
+				return RedirectToAction("Index");
+
+			if (model.Images != null && model.Images.Any())
+			{
+				using var content = new MultipartFormDataContent();
+				foreach (var image in model.Images)
+				{
+					var streamContent = new StreamContent(image.OpenReadStream());
+					streamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(image.ContentType);
+					content.Add(streamContent, "images", image.FileName);
+				}
+
+				var uploadResponse = await _client.PostAsync($"blogimage/upload/{createdBlogResult.Data}", content);
+
+				if (!uploadResponse.IsSuccessStatusCode)
+				{
+					var errorText = await uploadResponse.Content.ReadAsStringAsync();
+					Console.WriteLine("Görsel yükleme hatası: " + errorText);
+				}
+
 			}
 
 			return RedirectToAction("Index", "Blog");
@@ -213,6 +238,30 @@ namespace DogusProject.Web.Areas.Author.Controllers
 			{
 				ModelState.AddModelError(string.Empty, "Blog güncellenemedi.");
 				return HandleApiFailure("Blog güncellenemedi.", model);
+			}
+
+			var imageResponse = await _client.GetAsync($"blogimage/by-blog/{id}");
+			var imageResult = await imageResponse.Content.ReadFromJsonAsync<Result<List<BlogImageDto>>>();
+
+			model.ExistingImageUrls = imageResult?.Data?.Select(x => x.ImageUrl).ToList() ?? new();
+
+			if (model.Images != null && model.Images.Any())
+			{
+				using var content = new MultipartFormDataContent();
+				foreach (var image in model.Images)
+				{
+					var streamContent = new StreamContent(image.OpenReadStream());
+					streamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(image.ContentType);
+					content.Add(streamContent, "images", image.FileName);
+				}
+
+				var uploadResponse = await _client.PostAsync($"blogimage/upload/{id}", content);
+
+				if (!uploadResponse.IsSuccessStatusCode)
+				{
+					var errorText = await uploadResponse.Content.ReadAsStringAsync();
+					Console.WriteLine("Görsel güncelleme hatası: " + errorText);
+				}
 			}
 
 			return RedirectToAction("Index");
