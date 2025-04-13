@@ -122,5 +122,12 @@ namespace DogusProject.API.Controllers
 			var result = await _mediator.Send(new GetBlogsWithAuthorQuery(userId));
 			return result.Success ? Ok(result) : BadRequest(result);
 		}
+		[HttpGet("all-with-authors")]
+		[AllowAnonymous]
+		public async Task<IActionResult> GetAllWithAuthorsBlogs([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+		{
+			var result = await _mediator.Send(new GetAllBlogsWithAuthorQuery(page, pageSize));
+			return Ok(result);
+		}
 	}
 }

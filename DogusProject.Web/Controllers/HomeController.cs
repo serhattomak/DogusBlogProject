@@ -17,15 +17,15 @@ namespace DogusProject.Web.Controllers
 
 		public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
 		{
-			var response = await _client.GetAsync($"blog/all?page={page}&pageSize={pageSize}");
+			var response = await _client.GetAsync($"blog/all-with-authors?page={page}&pageSize={pageSize}");
 			if (!response.IsSuccessStatusCode)
 			{
 				TempData["Error"] = "Bloglar getirilemedi.";
 				return View(new PagedResult<BlogResponseDto>([], 0, page, pageSize));
 			}
 
-			var result = await ReadResponse<Result<PagedResult<BlogResponseDto>>>(response);
-			return View(result?.Data ?? new PagedResult<BlogResponseDto>([], 0, page, pageSize));
+			var result = await ReadResponse<PagedResult<BlogResponseDto>>(response);
+			return View(result ?? new PagedResult<BlogResponseDto>([], 0, page, pageSize));
 		}
 
 		public IActionResult Privacy()

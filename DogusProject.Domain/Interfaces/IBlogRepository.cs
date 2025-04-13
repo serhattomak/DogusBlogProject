@@ -1,4 +1,5 @@
-﻿using DogusProject.Domain.Entities;
+﻿using DogusProject.Domain.Common;
+using DogusProject.Domain.Entities;
 
 namespace DogusProject.Domain.Interfaces;
 
@@ -13,5 +14,6 @@ public interface IBlogRepository : IRepository<Blog>
 
 	Task<List<(Blog Blog, string? AuthorFullName, string? AuthorAvatarUrl)>>
 		GetBlogsWithAuthorInfoByAuthorIdAsync(Guid authorId);
+	Task<PagedResult<(Blog Blog, string? AuthorFullName)>> GetAllBlogsWithAuthorInfoAsync(int page, int pageSize);
 	Task RemoveBlogTagsAsync(Guid blogId);
 }

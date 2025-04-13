@@ -1,4 +1,5 @@
-﻿using DogusProject.Domain.Entities;
+﻿using DogusProject.Domain.Common;
+using DogusProject.Domain.Entities;
 using DogusProject.Domain.Interfaces;
 using DogusProject.Infrastructure.Identity;
 using DogusProject.Persistence.Context;
@@ -111,6 +112,37 @@ public class BlogRepository(AppIdentityDbContext context, UserManager<AppUser> u
 		}
 
 		return result;
+	}
+
+	public async Task<PagedResult<(Blog Blog, string? AuthorFullName)>> GetAllBlogsWithAuthorInfoAsync(int page, int pageSize)
+	{
+		var query = _context.Blogs
+			.Include(b => b.BlogImages)
+			.Include(b => b.Category)
+			.OrderByDescending(b => b.CreatedAt);
+
+		var totalCount = await query.CountAsync();
+
+		var blogs = await query
+			.Skip((page - 1) * pageSize)
+			.Take(pageSize)
+			.ToListAsync();
+
+		var result = new List<(Blog, string?)>();
+
+		foreach (var blog in blogs)
+		{
+			var user = await _context.Users.FindAsync(blog.UserId);
+			var fullName = user is null ? null : $"{user.FirstName} {user.LastName}";
+			result.Add((blog, fullName));
+		}
+
+		return new PagedResult<(Blog, string?)>
+		{
+			Items = result,
+			TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize),
+			CurrentPage = page
+		};
 	}
 	public async Task RemoveBlogTagsAsync(Guid blogId)
 	{
