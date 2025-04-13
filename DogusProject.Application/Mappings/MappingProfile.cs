@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DogusProject.Application.Features.BlogImages.Dtos;
 using DogusProject.Application.Features.Blogs.Dtos;
 using DogusProject.Application.Features.Categories.Commands;
 using DogusProject.Application.Features.Categories.Dtos;
@@ -33,6 +34,9 @@ public class MappingProfile : Profile
 
 		CreateMap<Blog, BlogDetailDto>()
 			.ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.BlogTags.Select(bt => bt.Tag)));
+
+		// Blog Image
+		CreateMap<BlogImage, BlogImageDto>().ReverseMap();
 
 		// Category
 		CreateMap<Category, CategoryDto>().ReverseMap();

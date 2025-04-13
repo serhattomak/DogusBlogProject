@@ -8,6 +8,8 @@
 
   <ItemGroup>
     <Folder Include="Extensions\" />
+    <Folder Include="Features\BlogImages\Dtos\" />
+    <Folder Include="Features\BlogImages\Queries\" />
   </ItemGroup>
 
   <ItemGroup>
