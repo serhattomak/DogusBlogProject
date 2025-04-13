@@ -3,7 +3,7 @@ using DogusProject.Application.Features.BlogImages.Commands;
 using DogusProject.Domain.Entities;
 using DogusProject.Domain.Interfaces;
 using MediatR;
-using Microsoft.AspNetCore.Hosting;
+using IFileService = DogusProject.Application.Interfaces.IFileService;
 
 namespace DogusProject.Application.Features.BlogImages.Handlers;
 
@@ -11,13 +11,13 @@ public class CreateBlogImageCommandHandler : IRequestHandler<CreateBlogImageComm
 {
 	private readonly IBlogRepository _blogRepository;
 	private readonly IBlogImageRepository _blogImageRepository;
-	private readonly IWebHostEnvironment _env;
+	private readonly IFileService _fileService;
 
-	public CreateBlogImageCommandHandler(IWebHostEnvironment env, IBlogRepository blogRepository, IBlogImageRepository blogImageRepository)
+	public CreateBlogImageCommandHandler(IBlogRepository blogRepository, IBlogImageRepository blogImageRepository, IFileService fileService)
 	{
-		_env = env;
 		_blogRepository = blogRepository;
 		_blogImageRepository = blogImageRepository;
+		_fileService = fileService;
 	}
 
 	public async Task<Result<string>> Handle(CreateBlogImageCommand request, CancellationToken cancellationToken)
@@ -31,24 +31,13 @@ public class CreateBlogImageCommandHandler : IRequestHandler<CreateBlogImageComm
 
 		foreach (var image in request.Images)
 		{
-			var extension = Path.GetExtension(image.FileName);
-			var fileName = $"{Guid.NewGuid()}{extension}";
-			var folderPath = Path.Combine(_env.WebRootPath, "uploads", "blogs");
-
-			if (!Directory.Exists(folderPath))
-				Directory.CreateDirectory(folderPath);
-
-			var filePath = Path.Combine(folderPath, fileName);
-			using var stream = new FileStream(filePath, FileMode.Create);
-			await image.CopyToAsync(stream, cancellationToken);
-
-			var relativePath = Path.Combine("uploads", "blogs", fileName).Replace("\\", "/");
+			var (fullPath, relativePath) = await _fileService.SaveFileAsync(image, "blogs", cancellationToken);
 
 			var blogImage = new BlogImage
 			{
 				BlogId = blog.Id,
-				ImagePath = filePath,
-				ImageUrl = "/" + relativePath
+				ImagePath = fullPath,
+				ImageUrl = relativePath
 			};
 
 			await _blogImageRepository.AddAsync(blogImage);
