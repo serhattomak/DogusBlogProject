@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using DogusProject.Application.Common;
+﻿using DogusProject.Application.Common;
 using DogusProject.Application.Features.Comments.Dtos;
 using DogusProject.Application.Features.Comments.Queries;
 using DogusProject.Domain.Interfaces;
@@ -7,22 +6,29 @@ using MediatR;
 
 namespace DogusProject.Application.Features.Comments.Handlers;
 
-public class GetCommentsByBlogIdQueryHandler : IRequestHandler<GetCommentsByBlogIdQuery, Result<List<CommentDto>>>
+public class GetCommentsByBlogIdQueryHandler : IRequestHandler<GetCommentsByBlogIdQuery, Result<List<CommentResponseDto>>>
 {
-	private readonly ICommentRepository _repository;
-	private readonly IMapper _mapper;
+	private readonly ICommentRepository _commentRepository;
 
-	public GetCommentsByBlogIdQueryHandler(ICommentRepository repository, IMapper mapper)
+	public GetCommentsByBlogIdQueryHandler(ICommentRepository commentRepository)
 	{
-		_repository = repository;
-		_mapper = mapper;
+		_commentRepository = commentRepository;
 	}
 
-	public async Task<Result<List<CommentDto>>> Handle(GetCommentsByBlogIdQuery request, CancellationToken cancellationToken)
+	public async Task<Result<List<CommentResponseDto>>> Handle(GetCommentsByBlogIdQuery request, CancellationToken cancellationToken)
 	{
-		var comments = await _repository.GetByBlogIdAsync(request.BlogId);
-		var dto = _mapper.Map<List<CommentDto>>(comments.OrderByDescending(x => x.CreatedAt));
+		var rawComments = await _commentRepository.GetCommentsWithAuthorsByBlogIdAsync(request.BlogId);
 
-		return Result<List<CommentDto>>.SuccessResult(dto);
+		var dtos = rawComments.Select(rc => new CommentResponseDto
+		{
+			Id = rc.Comment.Id,
+			BlogId = rc.Comment.BlogId,
+			UserId = rc.Comment.UserId,
+			Content = rc.Comment.Content,
+			CreatedAt = rc.Comment.CreatedAt,
+			AuthorFullName = rc.AuthorFullName ?? "Anonim"
+		}).ToList();
+
+		return Result<List<CommentResponseDto>>.SuccessResult(dtos);
 	}
 }

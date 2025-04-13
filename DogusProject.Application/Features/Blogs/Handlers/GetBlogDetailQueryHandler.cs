@@ -20,11 +20,13 @@ public class GetBlogDetailQueryHandler : IRequestHandler<GetBlogDetailQuery, Res
 
 	public async Task<Result<BlogDetailDto>> Handle(GetBlogDetailQuery request, CancellationToken cancellationToken)
 	{
-		var blog = await _blogRepository.GetByIdWithCategoryAndTagsAsync(request.BlogId);
+		var (blog, authorName) = await _blogRepository.GetBlogWithAuthorAsync(request.BlogId);
 		if (blog == null)
 			return Result<BlogDetailDto>.FailureResult("Blog bulunamadı.");
 
 		var dto = _mapper.Map<BlogDetailDto>(blog);
+		dto.Author = authorName;
+
 		return Result<BlogDetailDto>.SuccessResult(dto);
 	}
 }

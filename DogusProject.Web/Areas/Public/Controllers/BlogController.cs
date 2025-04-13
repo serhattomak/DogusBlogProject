@@ -22,13 +22,10 @@ namespace DogusProject.Web.Areas.Public.Controllers
 		[HttpGet("")]
 		public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
 		{
-			var response = await _client.GetAsync($"blog/all?page={page}&pageSize={pageSize}");
-			var result = await ReadResponse<Result<PagedResult<BlogResponseDto>>>(response);
+			var response = await _client.GetAsync($"blog/all-with-authors?page={page}&pageSize={pageSize}");
+			var result = await ReadResponse<PagedResult<BlogResponseDto>>(response);
 
-			if (result is null || !result.Success)
-				return View(new PagedResult<BlogResponseDto>([], 0, page, pageSize));
-
-			return View(result.Data);
+			return View(result ?? new PagedResult<BlogResponseDto>([], 0, page, pageSize));
 		}
 
 		[HttpGet("detail/{id}")]

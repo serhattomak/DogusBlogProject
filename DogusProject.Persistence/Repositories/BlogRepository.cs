@@ -144,6 +144,24 @@ public class BlogRepository(AppIdentityDbContext context, UserManager<AppUser> u
 			CurrentPage = page
 		};
 	}
+
+	public async Task<(Blog Blog, string? AuthorFullName)> GetBlogWithAuthorAsync(Guid blogId)
+	{
+		var blog = await _context.Blogs
+			.Include(b => b.Category)
+			.Include(b => b.BlogTags)
+			.ThenInclude(bt => bt.Tag)
+			.FirstOrDefaultAsync(b => b.Id == blogId);
+
+		if (blog is null)
+			return (null!, null);
+
+		var user = await _context.Users.FindAsync(blog.UserId);
+		var authorFullName = user is null ? null : $"{user.FirstName} {user.LastName}";
+
+		return (blog, authorFullName);
+	}
+
 	public async Task RemoveBlogTagsAsync(Guid blogId)
 	{
 		var tags = await _context.BlogTags

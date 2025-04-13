@@ -54,7 +54,7 @@ else
         {
             <div class="mb-3 p-3 border rounded shadow-sm">
                 <p class="mb-1">@comment.Content</p>
-                <small class="text-muted">@comment.CreatedAt.ToString("dd.MM.yyyy HH:mm")</small>
+                <small class="text-muted">@comment.CreatedAt.ToString("dd.MM.yyyy HH:mm") - @comment.AuthorFullName</small>
             </div>
         }
     }

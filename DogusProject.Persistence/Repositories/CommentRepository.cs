@@ -29,4 +29,23 @@ public class CommentRepository : EfRepository<Comment>, ICommentRepository
 			.Where(c => c.UserId == userId)
 			.ToListAsync();
 	}
+
+	public async Task<List<(Comment Comment, string? AuthorFullName)>> GetCommentsWithAuthorsByBlogIdAsync(Guid blogId)
+	{
+		var comments = await _context.Comments
+			.Where(c => c.BlogId == blogId)
+			.OrderByDescending(c => c.CreatedAt)
+			.ToListAsync();
+
+		var result = new List<(Comment, string?)>();
+
+		foreach (var comment in comments)
+		{
+			var user = await _context.Users.FindAsync(comment.UserId);
+			var fullName = user is null ? null : $"{user.FirstName} {user.LastName}";
+			result.Add((comment, fullName));
+		}
+
+		return result;
+	}
 }
