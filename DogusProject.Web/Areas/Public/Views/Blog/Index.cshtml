@@ -5,94 +5,93 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container-fluid mt-4">
-    <div class="row">
-        <div class="col-md-11 col-lg-9">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="fw-bold">Son Bloglar</h2>
-                @if (HttpContextAccessor.HttpContext?.User.IsInRole("Author") == true || 
-                     HttpContextAccessor.HttpContext?.User.IsInRole("Admin") == true)
-                {
-                    <a class="btn btn-sm btn-outline-primary rounded-pill" asp-area="Author" asp-controller="Blog" asp-action="Create">+ Yeni Blog</a>
-                }
-            </div>
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">📚 Bloglar</h2>
+        @if (HttpContextAccessor.HttpContext?.User.IsInRole("Author") == true ||
+        HttpContextAccessor.HttpContext?.User.IsInRole("Admin") == true)
+        {
+            <a class="btn btn-outline-primary rounded-pill" asp-area="Author" asp-controller="Blog" asp-action="Create">+ Yeni Blog</a>
+        }
+    </div>
 
-            @if (Model.Items != null && Model.Items.Any())
+    @if (Model.Items != null && Model.Items.Any())
+    {
+        <div class="row g-4">
+            @foreach (var blog in Model.Items)
             {
-                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                    @foreach (var blog in Model.Items)
-                    {
-                        <div class="col">
-                            <div class="card h-100 shadow-sm border-0">
-                                @if (blog.ImageUrls != null && blog.ImageUrls.Any())
-                                {
-                                    if (blog.ImageUrls.Count == 1)
-                                    {
-                                        <img src="@blog.ImageUrls.First()" class="card-img-top" alt="Blog Görseli" style="height: 200px; object-fit: cover;">
-                                    }
-                                    else
-                                    {
-                                        var carouselId = $"carousel_{blog.Id}";
-
-                                        <div id="@carouselId" class="carousel slide" data-bs-ride="carousel">
-                                            <div class="carousel-inner" style="height: 200px;">
-                                                @for (int i = 0; i < blog.ImageUrls.Count; i++)
-                                                {
-                                                    var imageUrl = blog.ImageUrls[i];
-                                                    <div class="carousel-item @(i == 0 ? "active" : "")">
-                                                        <img src="@imageUrl" class="d-block w-100" style="object-fit: cover; height: 200px;" alt="Blog Görseli @(i + 1)">
-                                                    </div>
-                                                }
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card h-100 shadow-sm border-0 rounded-4">
+                        @if (blog.ImageUrls != null && blog.ImageUrls.Any())
+                        {
+                            if (blog.ImageUrls.Count == 1)
+                            {
+                                <img src="@blog.ImageUrls.First()" class="card-img-top" alt="Blog Görseli" style="height: 200px; object-fit: cover;">
+                            }
+                            else
+                            {
+                                var carouselId = $"carousel_{blog.Id}";
+                                <div id="@carouselId" class="carousel slide" data-bs-ride="carousel">
+                                    <div class="carousel-inner" style="height: 200px;">
+                                        @for (int i = 0; i < blog.ImageUrls.Count; i++)
+                                        {
+                                            var imageUrl = blog.ImageUrls[i];
+                                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                                <img src="@imageUrl" class="d-block w-100" style="object-fit: cover; height: 200px;" alt="Blog Görseli @(i + 1)">
                                             </div>
-                                            <button class="carousel-control-prev" type="button" data-bs-target="#@carouselId" data-bs-slide="prev">
-                                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                                <span class="visually-hidden">Önceki</span>
-                                            </button>
-                                            <button class="carousel-control-next" type="button" data-bs-target="#@carouselId" data-bs-slide="next">
-                                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                                <span class="visually-hidden">Sonraki</span>
-                                            </button>
-                                        </div>
-                                    }
-                                }
-                                else
-                                {
-                                    <img src="~/images/placeholder.jpg" class="card-img-top rounded-top"
-                                         style="max-height: 300px; object-fit: cover;" alt="Varsayılan Görsel" />
-                                }
-
-                                <div class="card-body d-flex flex-column">
-                                    <h5 class="card-title">@blog.Title</h5>
-                                    <p class="card-text text-muted small mb-1">
-                                        <i class="bi bi-person-fill"></i> @blog.AuthorFullName &nbsp;|&nbsp;
-                                        <i class="bi bi-calendar"></i> @blog.CreatedAt.ToString("dd MMM yyyy")
-                                    </p>
-                                    <p class="card-text text-truncate">@blog.Content</p>
-                                    <div class="mt-auto">
-                                        <a asp-area="Public" asp-controller="Blog" asp-action="Detail" asp-route-id="@blog.Id" class="btn btn-outline-primary btn-sm w-100 rounded-pill">Devamını oku</a>
+                                        }
                                     </div>
+                                    <button class="carousel-control-prev" type="button" data-bs-target="#@carouselId" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Önceki</span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button" data-bs-target="#@carouselId" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Sonraki</span>
+                                    </button>
                                 </div>
+                            }
+                        }
+                        else
+                        {
+                            <img src="~/images/placeholder.jpg" class="card-img-top rounded-top"
+                                 style="height: 200px; object-fit: cover;" alt="Varsayılan Görsel" />
+                        }
+
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">@blog.Title</h5>
+                            <p class="card-text text-muted small mb-1">
+                                <i class="bi bi-person-fill"></i> @blog.AuthorFullName &nbsp;|&nbsp;
+                                <i class="bi bi-calendar"></i> @blog.CreatedAt.ToString("dd MMM yyyy")
+                            </p>
+                            <p class="card-text text-truncate">@blog.Content</p>
+                            <div class="mt-auto">
+                                <a asp-area="Public" asp-controller="Blog" asp-action="Detail" asp-route-id="@blog.Id" class="btn btn-outline-primary btn-sm w-100 rounded-pill">Devamını oku</a>
                             </div>
                         </div>
-                    }
+                    </div>
                 </div>
-
-                <!-- Pagination -->
-                <nav class="mt-4">
-                    <ul class="pagination justify-content-center">
-                        @for (int i = 1; i <= Model.TotalPages; i++)
-                        {
-                            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
-                                <a class="page-link" asp-route-page="@i">@i</a>
-                            </li>
-                        }
-                    </ul>
-                </nav>
-            }
-            else
-            {
-                <div class="alert alert-info">Henüz blog paylaşımı yapılmamış.</div>
             }
         </div>
-    </div>
+
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a class="page-link"
+                           asp-area="Public"
+                           asp-controller="Blog"
+                           asp-action="Index"
+                           asp-route-page="@i"
+                           asp-route-pageSize="@Model.PageSize">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+    else
+    {
+        <div class="alert alert-info">Henüz blog paylaşımı yapılmamış.</div>
+    }
 </div>

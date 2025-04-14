@@ -20,7 +20,7 @@ namespace DogusProject.Web.Areas.Public.Controllers
 		}
 
 		[HttpGet("")]
-		public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
+		public async Task<IActionResult> Index(int page = 1, int pageSize = 9)
 		{
 			var response = await _client.GetAsync($"blog/all-with-authors?page={page}&pageSize={pageSize}");
 			var result = await ReadResponse<PagedResult<BlogResponseDto>>(response);

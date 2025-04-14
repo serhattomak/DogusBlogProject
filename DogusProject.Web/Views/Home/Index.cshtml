@@ -6,84 +6,99 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container-fluid mt-4">
-    <div class="row">
-        <div class="col-md-11 col-lg-9">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="fw-bold">Son Bloglar</h2>
-                @if (HttpContextAccessor.HttpContext?.User.IsInRole("Author") == true ||
-                HttpContextAccessor.HttpContext?.User.IsInRole("Admin") == true)
-                {
-                    <a class="btn btn-sm btn-outline-primary rounded-pill" asp-area="Author" asp-controller="Blog" asp-action="Create">+ Yeni Blog</a>
-                }
-            </div>
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">📰 Son Bloglar</h2>
+        @if (HttpContextAccessor.HttpContext?.User.IsInRole("Author") == true || HttpContextAccessor.HttpContext?.User.IsInRole("Admin") == true)
+        {
+            <a class="btn btn-outline-primary rounded-pill" asp-area="Author" asp-controller="Blog" asp-action="Create">+ Yeni Blog</a>
+        }
+    </div>
 
-            @if (Model.Items != null && Model.Items.Any())
+    @if (Model.Items != null && Model.Items.Any())
+    {
+        <div class="vstack gap-4">
+            @foreach (var blog in Model.Items)
             {
-                <div class="vstack gap-4">
-                    @foreach (var blog in Model.Items)
-                    {
-                        <div class="card shadow-sm border-0">
-                            @if (blog.ImageUrls != null && blog.ImageUrls.Any())
-                            {
-                                <img src="@blog.ImageUrls.First()" class="card-img-top rounded-top"
-                                     alt="Blog Görseli"
-                                     style="max-height: 300px; object-fit: cover;" />
-                            }
-                            else
-                            {
-                                <img src="~/images/placeholder.jpg" class="card-img-top rounded-top"
-                                     style="max-height: 300px; object-fit: cover;" alt="Varsayılan Görsel" />
-                            }
+                <div class="card mb-4 border-0 shadow-sm rounded-4">
+                    <div class="card-body p-4">
 
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between mb-2">
-                                    <div class="text-muted small">
-                                        <i class="bi bi-person-fill"></i> @blog.AuthorFullName
-                                        &nbsp;|&nbsp;
-                                        <i class="bi bi-calendar"></i> @blog.CreatedAt.ToString("dd MMM yyyy")
-                                    </div>
-                                </div>
-
-                                <h5 class="fw-semibold">@blog.Title</h5>
-                                <p class="text-truncate text-secondary">@blog.Content</p>
-
-                                <div class="d-flex justify-content-between align-items-center mt-3">
-                                    <a asp-area="Public" asp-controller="Blog" asp-action="Detail" asp-route-id="@blog.Id"
-                                       class="btn btn-outline-primary btn-sm rounded-pill">Devamını oku</a>
-
-                                    <button type="button"
-                                            class="btn btn-sm btn-outline-secondary rounded-circle"
-                                            title="Yorum Yap"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#commentModal"
-                                            data-blog-id="@blog.Id"
-                                            data-blog-title="@blog.Title">
-                                        <i class="bi bi-chat-dots"></i>
-                                    </button>
-                                </div>
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="@(!string.IsNullOrEmpty(blog.AuthorAvatarUrl) ? blog.AuthorAvatarUrl : "/images/default-avatar.png")"
+                                 class="rounded-circle me-3"
+                                 width="48" height="48"
+                                 alt="Avatar" />
+                            <div>
+                                <h6 class="mb-0 fw-semibold">@blog.AuthorFullName</h6>
+                                <small class="text-muted">@blog.CreatedAt.ToString("dd MMM yyyy")</small>
                             </div>
                         </div>
-                    }
-                </div>
 
-                <nav class="mt-4">
-                    <ul class="pagination justify-content-center">
-                        @for (int i = 1; i <= Model.TotalPages; i++)
+                        <h5 class="fw-bold mb-2">@blog.Title</h5>
+                        <p class="text-muted text-truncate">@blog.Content</p>
+
+                        @if (blog.ImageUrls != null && blog.ImageUrls.Any())
                         {
-                            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
-                                <a class="page-link" asp-route-page="@i">@i</a>
-                            </li>
+                            <div class="row g-2 mb-3">
+                                @foreach (var imageUrl in blog.ImageUrls.Take(4))
+                                {
+                                    <div class="col-6 col-md-3">
+                                        <img src="@imageUrl" class="img-fluid rounded w-100" style="object-fit: cover; aspect-ratio: 4 / 3;" alt="Blog Görseli" />
+                                    </div>
+                                }
+                            </div>
                         }
-                    </ul>
-                </nav>
-            }
-            else
-            {
-                <div class="alert alert-info">Henüz blog paylaşımı yapılmamış.</div>
+                        else
+                        {
+                            <img src="~/images/placeholder.jpg" class="img-fluid rounded w-100 mb-3"
+                                 style="max-height: 250px; object-fit: cover;" alt="Varsayılan Görsel" />
+                        }
+
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <span class="badge bg-light text-dark border">@blog.CategoryName</span>
+
+                            <div class="d-flex gap-2">
+                                <a asp-area="Public"
+                                   asp-controller="Blog"
+                                   asp-action="Detail"
+                                   asp-route-id="@blog.Id"
+                                   class="btn btn-sm btn-outline-primary rounded-pill">
+                                    Detaylar
+                                </a>
+
+                                <button type="button"
+                                        class="btn btn-sm btn-outline-secondary rounded-circle"
+                                        title="Yorum Yap"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#commentModal"
+                                        data-blog-id="@blog.Id"
+                                        data-blog-title="@blog.Title">
+                                    <i class="bi bi-chat-dots"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             }
         </div>
-    </div>
+
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a class="page-link"
+                           asp-route-page="@i"
+                           asp-route-pageSize="@Model.PageSize">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+    else
+    {
+        <div class="alert alert-info">Henüz blog paylaşımı yapılmamış.</div>
+    }
 </div>
 
 <div class="modal fade" id="commentModal" tabindex="-1" aria-labelledby="commentModalLabel" aria-hidden="true">
@@ -94,12 +109,11 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
             </div>
             <div class="modal-body">
-
                 @if (User.Identity?.IsAuthenticated == true)
                 {
                     <form id="commentForm">
                         @Html.AntiForgeryToken()
-                        <input type="hidden" id="modalBlogId" name="BlogId"/>
+                        <input type="hidden" id="modalBlogId" name="BlogId" />
                         <div class="mb-3">
                             <label for="commentContent" class="form-label">Yorumunuz</label>
                             <textarea class="form-control" id="commentContent" name="Content" rows="3"></textarea>
@@ -114,7 +128,7 @@
                     <div class="alert alert-warning">Yorum yapmak için giriş yapmalısınız.</div>
                     <div class="d-flex justify-content-between">
                         <a class="btn btn-outline-primary w-50 me-2 rounded-pill" asp-area="Auth" asp-controller="Auth" asp-action="Login">Giriş Yap</a>
-                        <a class="btn btn-outline-secondary w-50 me-2 rounded-pill" asp-area="Auth" asp-controller="Auth" asp-action="Register">Kayıt Ol</a>
+                        <a class="btn btn-outline-secondary w-50 rounded-pill" asp-area="Auth" asp-controller="Auth" asp-action="Register">Kayıt Ol</a>
                     </div>
                 }
             </div>
@@ -125,60 +139,49 @@
 @section Scripts {
     <script>
         document.querySelectorAll('[data-bs-target="#commentModal"]').forEach(button => {
-            button.addEventListener('click',
-                function() {
-                    const blogId = this.getAttribute('data-blog-id');
-                    const title = this.getAttribute('data-blog-title');
-
-                    const blogIdInput = document.getElementById('modalBlogId');
-                    const modalTitle = document.querySelector('#commentModal .modal-title');
-
-                    if (blogIdInput) blogIdInput.value = blogId;
-                    if (modalTitle) modalTitle.textContent = `Yorum Yap - ${title}`;
-                });
+            button.addEventListener('click', function () {
+                const blogId = this.getAttribute('data-blog-id');
+                const title = this.getAttribute('data-blog-title');
+                document.getElementById('modalBlogId').value = blogId;
+                document.querySelector('#commentModal .modal-title').textContent = `Yorum Yap - ${title}`;
+            });
         });
 
         const commentForm = document.getElementById('commentForm');
         if (commentForm) {
-            commentForm.addEventListener('submit',
-                async (e) => {
-                    e.preventDefault();
+            commentForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const blogId = document.getElementById('modalBlogId')?.value;
+                const content = document.getElementById('commentContent')?.value;
 
-                    const blogId = document.getElementById('modalBlogId')?.value;
-                    const content = document.getElementById('commentContent')?.value;
+                if (!blogId || !content) {
+                    alert("Yorum içeriği veya Blog ID eksik.");
+                    return;
+                }
 
-                    if (!blogId || !content) {
-                        alert("Yorum içeriği veya Blog ID eksik.");
-                        return;
+                try {
+                    const response = await fetch("/api/comment", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${window.accessToken}`
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify({ blogId, content })
+                    });
+
+                    if (response.ok) {
+                        alert("Yorum gönderildi.");
+                        bootstrap.Modal.getInstance(document.getElementById('commentModal'))?.hide();
+                        document.getElementById('commentContent').value = '';
+                    } else {
+                        alert("Yorum gönderilemedi.");
                     }
-
-                    try {
-                        const response = await fetch("https://localhost:7174/api/comment",
-                            {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': `Bearer ${window.accessToken}`
-                                },
-                                credentials: 'include',
-                                body: JSON.stringify({ blogId, content })
-                            });
-
-                        if (response.ok) {
-                            alert("Yorum gönderildi.");
-                            bootstrap.Modal.getInstance(document.getElementById('commentModal'))?.hide();
-                            document.getElementById('commentContent').value = '';
-                        } else {
-                            const err = await response.text();
-                            console.error(err);
-                            alert("Yorum gönderilemedi.");
-                        }
-                    } catch (err) {
-                        console.error("İstek hatası:", err);
-                        alert("İstek gönderilemedi.");
-                    }
-                });
+                } catch (err) {
+                    console.error("İstek hatası:", err);
+                    alert("İstek gönderilemedi.");
+                }
+            });
         }
-
     </script>
 }

@@ -41,7 +41,8 @@ public class GetAllBlogsWithAuthorQueryHandler : IRequestHandler<GetAllBlogsWith
 		{
 			Items = dtos,
 			CurrentPage = blogTuples.CurrentPage,
-			TotalPages = blogTuples.TotalPages
+			PageSize = request.PageSize,
+			TotalCount = blogTuples.TotalCount
 		};
 	}
 }

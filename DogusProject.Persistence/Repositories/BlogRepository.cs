@@ -140,8 +140,9 @@ public class BlogRepository(AppIdentityDbContext context, UserManager<AppUser> u
 		return new PagedResult<(Blog, string?)>
 		{
 			Items = result,
-			TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize),
-			CurrentPage = page
+			CurrentPage = page,
+			PageSize = pageSize,
+			TotalCount = totalCount
 		};
 	}
 

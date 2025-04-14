@@ -25,7 +25,10 @@ namespace DogusProject.Web.Controllers
 			}
 
 			var result = await ReadResponse<PagedResult<BlogResponseDto>>(response);
-			return View(result ?? new PagedResult<BlogResponseDto>([], 0, page, pageSize));
+			if (result == null)
+				return View(new PagedResult<BlogResponseDto>([], 0, page, pageSize));
+
+			return View(result);
 		}
 
 		public IActionResult Privacy()
