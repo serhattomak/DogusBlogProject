@@ -5,80 +5,89 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Blog Düzenle</h2>
+<div class="container py-4">
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+            <h3 class="mb-4 fw-semibold">Blogu Düzenle</h3>
 
-<form asp-area="Author" asp-controller="Blog" asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
-    @Html.AntiForgeryToken()
+            <form asp-area="Author" asp-controller="Blog" asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
 
-    <div class="mb-3">
-        <label asp-for="Title" class="form-label">Başlık</label>
-        <input asp-for="Title" class="form-control" />
-        <span asp-validation-for="Title" class="text-danger"></span>
-    </div>
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label">Başlık</label>
+                    <input asp-for="Title" class="form-control" placeholder="Blog başlığı" />
+                    <span asp-validation-for="Title" class="text-danger small"></span>
+                </div>
 
-    <div class="mb-3">
-        <label asp-for="Content" class="form-label">İçerik</label>
-        <textarea asp-for="Content" class="form-control" rows="6"></textarea>
-        <span asp-validation-for="Content" class="text-danger"></span>
-    </div>
+                <div class="mb-3">
+                    <label asp-for="Content" class="form-label">İçerik</label>
+                    <textarea asp-for="Content" class="form-control" rows="6" placeholder="Blog içeriğini yazın"></textarea>
+                    <span asp-validation-for="Content" class="text-danger small"></span>
+                </div>
 
-    <div class="mb-3">
-        <label asp-for="CategoryId" class="form-label">Kategori</label>
-        <select asp-for="CategoryId" class="form-select"
-                asp-items="@(new SelectList(Model.Categories, "Id", "Name", Model.CategoryId))">
-            <option value="">Kategori Seçiniz</option>
-        </select>
-        <span asp-validation-for="CategoryId" class="text-danger"></span>
-    </div>
+                <div class="mb-3">
+                    <label asp-for="CategoryId" class="form-label">Kategori</label>
+                    <select asp-for="CategoryId" class="form-select" asp-items="@(new SelectList(Model.Categories, "Id", "Name", Model.CategoryId))">
+                        <option value="">-- Kategori Seçin --</option>
+                    </select>
+                    <span asp-validation-for="CategoryId" class="text-danger small"></span>
+                </div>
 
-    <div class="mb-3">
-        <label class="form-label">Mevcut Etiketler</label>
-        @foreach (var tag in Model.AvailableTags)
-        {
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="SelectedTagIds" value="@tag.Id"
-                @(Model.SelectedTagIds.Contains(tag.Id) ? "checked" : "") />
-                <label class="form-check-label">@tag.Name</label>
-            </div>
-        }
-    </div>
+                <div class="mb-3">
+                    <label class="form-label">Etiketler</label>
+                    <div class="d-flex flex-wrap gap-2">
+                        @foreach (var tag in Model.AvailableTags)
+                        {
+                            <div class="form-check me-3">
+                                <input class="form-check-input" type="checkbox" name="SelectedTagIds" value="@tag.Id"
+                                       id="tag_@tag.Id" @(Model.SelectedTagIds.Contains(tag.Id) ? "checked" : "") />
+                                <label class="form-check-label small text-muted" for="tag_@tag.Id">@tag.Name</label>
+                            </div>
+                        }
+                    </div>
+                </div>
 
-    <div class="mb-3">
-        <label class="form-label" for="NewTags">Yeni Etiketler (virgül ile ayırarak yazın)</label>
-        <input type="text" name="NewTags" class="form-control" placeholder="örneğin: yeniEtiket1, yeniEtiket2" />
-    </div>
-    
-    <div class="mb-3">
-        <label class="form-label">Yeni Görsel Yükle</label>
-        <input type="file" name="Images" class="form-control" id="imageUploadInput" multiple accept="image/*" />
-        <div id="imagePreviewContainer" class="d-flex flex-wrap gap-2 mt-3"></div>
-    </div>
-    
-    @if (Model.ExistingImages?.Any() == true)
-    {
-        <div class="mb-3">
-            <label class="form-label">Yüklenen Görseller</label>
-            <div class="d-flex flex-wrap gap-2">
-                @foreach (var image in Model.ExistingImages)
+                <div class="mb-3">
+                    <label for="NewTags" class="form-label">Yeni Etiketler</label>
+                    <input type="text" name="NewTags" class="form-control" placeholder="örn: yeni1, yeni2" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Yeni Görseller</label>
+                    <input type="file" name="Images" class="form-control" id="imageUploadInput" multiple accept="image/*" />
+                    <div id="imagePreviewContainer" class="d-flex flex-wrap gap-2 mt-3"></div>
+                </div>
+
+                @if (Model.ExistingImages?.Any() == true)
                 {
-                    <div class="position-relative">
-                        <img src="@image.Url" width="100" height="100" class="rounded border" />
-                        <form asp-area="Author" asp-controller="BlogImage" asp-action="Delete" method="post" class="position-absolute top-0 end-0">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="id" value="@image.Id" />
-                            <button type="submit" class="btn btn-sm btn-danger rounded-circle" title="Sil">
-                                <i class="bi bi-x"></i>
-                            </button>
-                        </form>
+                    <div class="mb-4">
+                        <label class="form-label">Yüklenmiş Görseller</label>
+                        <div class="d-flex flex-wrap gap-3">
+                            @foreach (var image in Model.ExistingImages)
+                            {
+                                <div class="position-relative">
+                                    <img src="@image.Url" width="100" height="100" class="rounded border" style="object-fit: cover;" />
+                                    <form asp-area="Author" asp-controller="BlogImage" asp-action="Delete" method="post" class="position-absolute top-0 end-0">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@image.Id" />
+                                        <button type="submit" class="btn btn-sm btn-danger rounded-circle" title="Sil">
+                                            <i class="bi bi-x"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            }
+                        </div>
                     </div>
                 }
-            </div>
-        </div>
-    }
 
-    <button type="submit" class="btn btn-success rounded-pill">Güncelle</button>
-    <a asp-action="Index" class="btn btn-secondary rounded-pill">İptal</a>
-</form>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-success rounded-pill">Güncelle</button>
+                    <a asp-action="Index" class="btn btn-secondary rounded-pill">İptal</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
@@ -100,6 +109,7 @@
                             img.src = e.target.result;
                             img.classList.add('img-thumbnail');
                             img.style.height = '100px';
+                            img.style.width = '100px';
                             img.style.objectFit = 'cover';
                             previewContainer.appendChild(img);
                         }

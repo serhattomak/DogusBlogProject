@@ -1,59 +1,69 @@
 ﻿@model DogusProject.Web.Models.Blog.ViewModels.CreateBlogViewModel
 
 @{
-    ViewData["Title"] = "Blog Oluştur";
+    ViewData["Title"] = "Yeni Blog Oluştur";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Yeni Blog Oluştur</h2>
+<div class="container py-4">
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+            <h3 class="mb-4 fw-semibold">Yeni Blog Oluştur</h3>
 
-<form asp-area="Author" asp-controller="Blog" asp-action="Create" method="post" enctype="multipart/form-data">
-    @Html.AntiForgeryToken()
+            <form asp-area="Author" asp-controller="Blog" asp-action="Create" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
 
-    <div class="mb-3">
-        <label asp-for="Title" class="form-label">Başlık</label>
-        <input asp-for="Title" class="form-control" />
-        <span asp-validation-for="Title" class="text-danger"></span>
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label">Başlık</label>
+                    <input asp-for="Title" class="form-control" placeholder="Blog başlığı girin" />
+                    <span asp-validation-for="Title" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Content" class="form-label">İçerik</label>
+                    <textarea asp-for="Content" class="form-control" rows="6" placeholder="Blog içeriğini yazın"></textarea>
+                    <span asp-validation-for="Content" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="CategoryId" class="form-label">Kategori</label>
+                    <select asp-for="CategoryId" class="form-select" asp-items="@(new SelectList(Model.Categories, "Id", "Name"))">
+                        <option value="">-- Kategori Seçin --</option>
+                    </select>
+                    <span asp-validation-for="CategoryId" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Etiketler</label>
+                    <div class="d-flex flex-wrap gap-2">
+                        @foreach (var tag in Model.Tags)
+                        {
+                            <div class="form-check me-3">
+                                <input class="form-check-input" type="checkbox" name="SelectedTagIds" value="@tag.Id" id="tag_@tag.Id" />
+                                <label class="form-check-label small text-muted" for="tag_@tag.Id">@tag.Name</label>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="NewTags" class="form-label">Yeni Etiketler</label>
+                    <input type="text" name="NewTags" class="form-control" placeholder="örn: yenietiket1, yenietiket2" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Görsel Yükle</label>
+                    <input type="file" name="Images" class="form-control" id="imageUploadInput" multiple accept="image/*" />
+                    <div id="imagePreviewContainer" class="d-flex flex-wrap gap-2 mt-3"></div>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary rounded-pill">Blogu Oluştur</button>
+                </div>
+            </form>
+        </div>
     </div>
-
-    <div class="mb-3">
-        <label asp-for="Content" class="form-label">İçerik</label>
-        <textarea asp-for="Content" class="form-control" rows="6"></textarea>
-        <span asp-validation-for="Content" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="CategoryId" class="form-label">Kategori</label>
-        <select asp-for="CategoryId" class="form-select" asp-items="@(new SelectList(Model.Categories, "Id", "Name"))">
-            <option value="">Kategori Seçiniz</option>
-        </select>
-        <span asp-validation-for="CategoryId" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Mevcut Etiketler</label>
-        @foreach (var tag in Model.Tags)
-        {
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="SelectedTagIds" value="@tag.Id" />
-                <label class="form-check-label">@tag.Name</label>
-            </div>
-        }
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label" for="NewTags">Yeni Etiketler (virgül ile ayırarak yazın)</label>
-        <input type="text" name="NewTags" class="form-control" placeholder="örneğin: yeniEtiket1, yeniEtiket2" />
-    </div>
-    
-    <div class="mb-3">
-        <label class="form-label">Görsel Yükle</label>
-        <input type="file" name="Images" class="form-control" id="imageUploadInput" multiple accept="image/*" />
-        <div id="imagePreviewContainer" class="d-flex flex-wrap gap-2 mt-3"></div>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Blogu Oluştur</button>
-</form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
@@ -75,6 +85,7 @@
                             img.src = e.target.result;
                             img.classList.add('img-thumbnail');
                             img.style.height = '100px';
+                            img.style.width = '100px';
                             img.style.objectFit = 'cover';
                             previewContainer.appendChild(img);
                         }

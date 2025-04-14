@@ -1,72 +1,84 @@
 ﻿@model DogusProject.Web.Models.Common.PagedResult<DogusProject.Web.Models.Blog.DTOs.BlogResponseDto>
+
 @{
     ViewData["Title"] = "Bloglarım";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Bloglarım</h2>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">📘 Bloglarım</h2>
+        <a asp-area="Author" asp-controller="Blog" asp-action="Create" class="btn btn-primary rounded-pill">
+            <i class="bi bi-plus-circle me-1"></i> Yeni Blog
+        </a>
+    </div>
 
-<a asp-area="Author" asp-controller="Blog" asp-action="Create" class="btn btn-primary mb-3">+ Yeni Blog</a>
-
-@if (Model.Items.Any())
-{
-    <table class="table table-bordered table-hover">
-        <thead>
-            <tr>
-                <th>Başlık</th>
-                <th>Kategori</th>
-                <th>Durum</th>
-                <th>Oluşturulma</th>
-                <th>İşlemler</th>
-            </tr>
-        </thead>
-        <tbody>
+    @if (Model.Items.Any())
+    {
+        <div class="row row-cols-1 row-cols-md-2 g-4">
             @foreach (var blog in Model.Items)
             {
-                <tr>
-                    <td>@blog.Title</td>
-                    <td>@blog.CategoryName</td>
-                    <td>
-                        @if (blog.Status == DogusProject.Domain.Enums.BlogStatus.Published)
+                <div class="col">
+                    <div class="card shadow-sm border-0 h-100">
+                        @if (blog.ImageUrls != null && blog.ImageUrls.Any())
                         {
-                            <span class="badge bg-success">Yayınlandı</span>
+                            <img src="@blog.ImageUrls.First()" class="card-img-top" style="height: 200px; object-fit: cover;" alt="Blog Görseli" />
                         }
                         else
                         {
-                            <span class="badge bg-warning text-dark">Taslak</span>
+                            <img src="~/images/placeholder.jpg" class="card-img-top" style="height: 200px; object-fit: cover;" alt="Placeholder" />
                         }
-                    </td>
-                    <td>@blog.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
-                    <td>
-                        <a asp-area="Author" asp-controller="Blog" asp-action="Edit" asp-route-id="@blog.Id" class="btn btn-sm btn-warning rounded-pill">Düzenle</a>
-                        <form asp-area="Author" asp-controller="Blog" asp-action="Delete" asp-route-id="@blog.Id" method="post" class="d-inline">
-                            @Html.AntiForgeryToken()
-                            <button type="submit" class="btn btn-sm btn-danger rounded-pill" onclick="return confirm('Blog silinsin mi?')">Sil</button>
-                        </form>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
 
-    <!-- Sayfalama -->
-    <nav aria-label="Sayfalama">
-        <ul class="pagination">
-            @for (int i = 1; i <= Math.Ceiling((double)Model.TotalCount / Model.PageSize); i++)
-            {
-                <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
-                    <a class="page-link"
-                       asp-area="Author"
-                       asp-controller="Blog"
-                       asp-action="Index"
-                       asp-route-page="@i"
-                       asp-route-pageSize="@Model.PageSize">@i</a>
-                </li>
+                        <div class="card-body d-flex flex-column">
+                            <a asp-area="Public" asp-controller="Blog" asp-action="Detail" asp-route-id="@blog.Id"><h5 class="card-title">@blog.Title</h5></a>
+                            <p class="card-text text-muted small mb-2">
+                                <i class="bi bi-tags"></i> @blog.CategoryName <br />
+                                <i class="bi bi-calendar"></i> @blog.CreatedAt.ToString("dd.MM.yyyy HH:mm")
+                            </p>
+
+                            <span class="badge @(blog.Status == DogusProject.Domain.Enums.BlogStatus.Published ? "bg-success" : "bg-warning text-dark") mb-3">
+                                @(blog.Status == DogusProject.Domain.Enums.BlogStatus.Published ? "Yayınlandı" : "Taslak")
+                            </span>
+
+                            <div class="mt-auto d-flex gap-2">
+                                <a asp-area="Author" asp-controller="Blog" asp-action="Edit" asp-route-id="@blog.Id"
+                                   class="btn btn-sm btn-outline-warning rounded-pill w-100">
+                                    <i class="bi bi-pencil-square me-1"></i> Düzenle
+                                </a>
+
+                                <form asp-area="Author" asp-controller="Blog" asp-action="Delete" asp-route-id="@blog.Id"
+                                      method="post" onsubmit="return confirm('Blog silinsin mi?')" class="w-100">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill w-100">
+                                        <i class="bi bi-trash3 me-1"></i> Sil
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             }
-        </ul>
-    </nav>
-}
-else
-{
-    <div class="alert alert-info">Henüz blogunuz bulunmamaktadır.</div>
-}
+        </div>
+
+        <!-- Sayfalama -->
+        <nav class="mt-4" aria-label="Sayfalama">
+            <ul class="pagination justify-content-center">
+                @for (int i = 1; i <= Math.Ceiling((double)Model.TotalCount / Model.PageSize); i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a class="page-link"
+                           asp-area="Author"
+                           asp-controller="Blog"
+                           asp-action="Index"
+                           asp-route-page="@i"
+                           asp-route-pageSize="@Model.PageSize">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+    else
+    {
+        <div class="alert alert-info">Henüz blogunuz bulunmamaktadır.</div>
+    }
+</div>
