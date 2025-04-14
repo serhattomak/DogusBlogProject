@@ -263,3 +263,25 @@ body {
     text-align: center;
     font-weight: 500;
 }
+
+.right-sidebar {
+    min-width: 250px;
+    font-size: 0.95rem;
+}
+
+.sidebar-link {
+    padding: 8px 12px;
+    border-radius: 0.5rem;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.sidebar-link:hover {
+    background-color: #f0f2f5;
+    color: #0d6efd;
+    text-decoration: none;
+}
+
+.sidebar-link:hover .badge {
+    background-color: #0d6efd;
+    color: white;
+}

@@ -1,33 +1,41 @@
 ﻿@model DogusProject.Web.Models.Sidebar.ViewModels.RightSidebarViewModel
 
-<div class="sidebar py-4 ps-md-3 border-start">
-    <div class="mb-auto">
-        <h6 class="text-muted text-uppercase fw-bold mb-3">Popüler Kategoriler</h6>
-        <ul class="nav nav-pills flex-column">
+<aside class="right-sidebar bg-white px-3 py-4 border-start shadow-sm rounded-start">
+    <section class="mb-5">
+        <h6 class="text-uppercase text-secondary fw-bold mb-3 small">📂 Popüler Kategoriler</h6>
+        <ul class="list-group list-group-flush">
             @foreach (var category in Model.PopularCategories)
             {
-                <li class="nav-item">
-                    <a asp-area="Public" asp-controller="Category" asp-action="BlogsByCategory" asp-route-id="@category.Id" class="nav-link d-flex justify-content-between align-items-center">
-                        <span>@category.Name</span>
-                        <span class="badge bg-primary rounded-pill ms-3">@category.BlogCount</span>
+                <li class="list-group-item px-0 border-0">
+                    <a asp-area="Public"
+                       asp-controller="Category"
+                       asp-action="BlogsByCategory"
+                       asp-route-id="@category.Id"
+                       class="d-flex justify-content-between align-items-center text-decoration-none sidebar-link">
+                        <span class="text-dark fw-medium">@category.Name</span>
+                        <span class="badge bg-light text-dark border">@category.BlogCount</span>
                     </a>
                 </li>
             }
         </ul>
-    </div>
+    </section>
 
-    <div class="mb-auto">
-        <h6 class="text-muted text-uppercase fw-bold mb-3">Popüler Etiketler</h6>
-        <ul class="nav nav-pills flex-column">
+    <section>
+        <h6 class="text-uppercase text-secondary fw-bold mb-3 small">🏷️ Popüler Etiketler</h6>
+        <ul class="list-group list-group-flush">
             @foreach (var tag in Model.PopularTags)
             {
-                <li class="nav-item">
-                    <a asp-area="Public" asp-controller="Tag" asp-action="BlogsByTag" asp-route-id="@tag.Id" class="nav-link d-flex justify-content-between align-items-center">
-                        <span>#@tag.Name</span>
-                        <span class="badge bg-primary rounded-pill ms-3">@tag.BlogCount</span>
+                <li class="list-group-item px-0 border-0">
+                    <a asp-area="Public"
+                       asp-controller="Tag"
+                       asp-action="BlogsByTag"
+                       asp-route-id="@tag.Id"
+                       class="d-flex justify-content-between align-items-center text-decoration-none sidebar-link">
+                        <span class="text-primary">#<strong>@tag.Name</strong></span>
+                        <span class="badge bg-light text-dark border">@tag.BlogCount</span>
                     </a>
                 </li>
             }
         </ul>
-    </div>
-</div>
+    </section>
+</aside>
