@@ -34,6 +34,7 @@ public class GetAllBlogsWithAuthorQueryHandler : IRequestHandler<GetAllBlogsWith
 			Content = tuple.Blog.Content,
 			CreatedAt = tuple.Blog.CreatedAt,
 			AuthorFullName = tuple.AuthorFullName ?? "Bilinmiyor",
+			AuthorAvatarUrl = tuple.AuthorAvatarUrl,
 			ImageUrls = imageDict.TryGetValue(tuple.Blog.Id, out var images) ? images : new()
 		}).ToList();
 

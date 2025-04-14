@@ -114,7 +114,7 @@ public class BlogRepository(AppIdentityDbContext context, UserManager<AppUser> u
 		return result;
 	}
 
-	public async Task<PagedResult<(Blog Blog, string? AuthorFullName)>> GetAllBlogsWithAuthorInfoAsync(int page, int pageSize)
+	public async Task<PagedResult<(Blog Blog, string? AuthorFullName, string? AuthorAvatarUrl)>> GetAllBlogsWithAuthorInfoAsync(int page, int pageSize)
 	{
 		var query = _context.Blogs
 			.Include(b => b.BlogImages)
@@ -128,16 +128,17 @@ public class BlogRepository(AppIdentityDbContext context, UserManager<AppUser> u
 			.Take(pageSize)
 			.ToListAsync();
 
-		var result = new List<(Blog, string?)>();
+		var result = new List<(Blog, string?, string?)>();
 
 		foreach (var blog in blogs)
 		{
 			var user = await _context.Users.FindAsync(blog.UserId);
 			var fullName = user is null ? null : $"{user.FirstName} {user.LastName}";
-			result.Add((blog, fullName));
+			var avatarUrl = user?.AvatarUrl;
+			result.Add((blog, fullName, avatarUrl));
 		}
 
-		return new PagedResult<(Blog, string?)>
+		return new PagedResult<(Blog, string?, string?)>
 		{
 			Items = result,
 			CurrentPage = page,
