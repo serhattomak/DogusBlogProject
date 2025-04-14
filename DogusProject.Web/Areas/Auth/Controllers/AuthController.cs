@@ -329,5 +329,34 @@ namespace DogusProject.Web.Areas.Auth.Controllers
 			return RedirectToAction("Profile");
 		}
 
+		[HttpPost("upload-avatar")]
+		public async Task<IActionResult> UploadAvatar([FromForm] UploadAvatarRequest request)
+		{
+			var token = HttpContext.Session.GetString("AccessToken");
+			if (string.IsNullOrEmpty(token))
+			{
+				TempData["Error"] = "Token bulunamadı. Lütfen tekrar giriş yapın.";
+				return RedirectToAction("Profile");
+			}
+
+			_client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+			var form = new MultipartFormDataContent
+			{
+				{ new StringContent(request.UserId.ToString()), "UserId" },
+				{ new StreamContent(request.File.OpenReadStream()), "File", request.File.FileName }
+			};
+
+			var response = await _client.PostAsync("user/upload-avatar", form);
+			if (!response.IsSuccessStatusCode)
+			{
+				TempData["Error"] = "Fotoğraf yüklenemedi.";
+				return RedirectToAction("Profile");
+			}
+
+			TempData["Success"] = "Profil fotoğrafı güncellendi.";
+			return RedirectToAction("Profile");
+		}
+
 	}
 }

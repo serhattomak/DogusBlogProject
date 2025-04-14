@@ -1,4 +1,6 @@
-﻿@model DogusProject.Web.Models.Auth.ViewModels.UserProfileViewModel
+﻿@using System.Security.Claims
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model DogusProject.Web.Models.Auth.ViewModels.UserProfileViewModel
 @{
     ViewData["Title"] = "Profilim";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -9,7 +11,11 @@
 <div class="container py-4 px-3">
     <div class="d-flex align-items-start">
         <div class="me-4 position-relative" style="margin-top: -20px;">
-            <img src="@Model.AvatarUrl" alt="Profil Resmi" class="rounded-circle border border-3" width="120" height="120" />
+            <img src="@Model.AvatarUrl" alt="Profil Resmi"
+                 class="rounded-circle border border-3"
+                 width="120" height="120"
+                 style="cursor:pointer"
+                 data-bs-toggle="modal" data-bs-target="#avatarModal" />
         </div>
 
         <div class="flex-grow-1">
@@ -73,6 +79,23 @@
         </div>
         <div class="tab-pane fade" id="comments" role="tabpanel" aria-labelledby="comments-tab">
             @await Html.PartialAsync("_MyCommentsPartial", Model.Comments)
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="avatarModal" tabindex="-1" aria-labelledby="avatarModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-3">
+            <h5 class="mb-3">Profil Fotoğrafı</h5>
+            <div class="d-grid gap-2">
+                <a href="@Model.AvatarUrl" target="_blank" class="btn btn-outline-secondary">Fotoğrafı Gör</a>
+
+                <form asp-area="Auth" asp-controller="Auth" asp-action="UploadAvatar" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="UserId" value="@User.FindFirstValue(ClaimTypes.NameIdentifier)" />
+                    <input type="file" name="File" class="form-control mb-2" accept="image/*" required />
+                    <button type="submit" class="btn btn-primary">Yeni Fotoğrafı Yükle</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>
