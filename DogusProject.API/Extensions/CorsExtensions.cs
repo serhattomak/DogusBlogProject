@@ -8,10 +8,7 @@ public static class CorsExtensions
 		{
 			opt.AddPolicy("Default", policy =>
 			{
-				policy.WithOrigins(
-						"https://localhost:7099",
-						"https://dogusprojectweb.azurewebsites.net/api/"
-					)
+				policy.WithOrigins("https://localhost:7099")
 					.AllowAnyHeader()
 					.AllowAnyMethod()
 					.AllowCredentials();

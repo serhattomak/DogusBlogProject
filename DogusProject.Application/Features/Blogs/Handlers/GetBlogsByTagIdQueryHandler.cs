@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using DogusProject.Application.Common;
-using DogusProject.Application.Common.Pagination;
 using DogusProject.Application.Features.Blogs.Dtos;
 using DogusProject.Application.Features.Blogs.Queries;
+using DogusProject.Domain.Common;
 using DogusProject.Domain.Interfaces;
 using MediatR;
 
@@ -23,26 +23,35 @@ public class GetBlogsByTagIdQueryHandler : IRequestHandler<GetBlogsByTagIdQuery,
 
 	public async Task<Result<PagedResult<BlogResponseDto>>> Handle(GetBlogsByTagIdQuery request, CancellationToken cancellationToken)
 	{
-		var blogs = await _blogRepository.GetBlogsByTagIdAsync(request.TagId);
+		var blogTuples = await _blogRepository.GetAllBlogsWithAuthorInfoAsync(request.Page, request.PageSize);
+		var filteredBlogs = blogTuples.Items.Where(x => x.Blog.BlogTags.Any(tag => tag.TagId == request.TagId)).ToList();
 
-		if (blogs == null || !blogs.Any())
-			return Result<PagedResult<BlogResponseDto>>.FailureResult("Blog not found.");
+		if (!filteredBlogs.Any())
+			return Result<PagedResult<BlogResponseDto>>.FailureResult("No blogs found for the specified tag.");
 
-		var paged = blogs
-			.OrderByDescending(x => x.CreatedAt)
-			.Skip((request.Page - 1) * request.PageSize)
-			.Take(request.PageSize)
-			.ToList();
+		var blogIds = filteredBlogs.Select(x => x.Blog.Id).ToList();
+		var allImages = await _blogImageRepository.GetImageUrlsByBlogIdsAsync(blogIds);
+		var imageDict = allImages
+			.GroupBy(img => img.BlogId)
+			.ToDictionary(g => g.Key, g => g.Select(x => x.ImageUrl).ToList());
 
-		var mapped = _mapper.Map<List<BlogResponseDto>>(paged);
-
-		foreach (var blogDto in mapped)
+		var dtos = filteredBlogs.Select(tuple => new BlogResponseDto
 		{
-			var images = await _blogImageRepository.GetImagesByBlogIdAsync(blogDto.Id);
-			blogDto.ImageUrls = images.Select(i => i.ImageUrl).ToList();
-		}
+			Id = tuple.Blog.Id,
+			Title = tuple.Blog.Title,
+			Content = tuple.Blog.Content,
+			CreatedAt = tuple.Blog.CreatedAt,
+			AuthorFullName = tuple.AuthorFullName ?? "Unknown",
+			AuthorAvatarUrl = tuple.AuthorAvatarUrl,
+			ImageUrls = imageDict.TryGetValue(tuple.Blog.Id, out var images) ? images : new()
+		}).ToList();
 
-		return Result<PagedResult<BlogResponseDto>>.SuccessResult(
-			new PagedResult<BlogResponseDto>(mapped, blogs.Count, request.Page, request.PageSize));
+		return Result<PagedResult<BlogResponseDto>>.SuccessResult(new PagedResult<BlogResponseDto>
+		{
+			Items = dtos,
+			CurrentPage = request.Page,
+			PageSize = request.PageSize,
+			TotalCount = filteredBlogs.Count
+		});
 	}
 }

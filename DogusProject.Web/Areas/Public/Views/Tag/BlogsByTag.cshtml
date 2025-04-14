@@ -27,6 +27,14 @@ else
                      style="max-height: 300px; object-fit: cover;" alt="Varsayılan Görsel" />
             }
             <div class="card-body">
+                <div class="d-flex justify-content-between mb-2">
+                    <div class="text-muted small">
+                        <i class="bi bi-person-fill"></i> @blog.AuthorFullName
+                        &nbsp;|&nbsp;
+                        <i class="bi bi-calendar"></i> @blog.CreatedAt.ToString("dd MMM yyyy")
+                    </div>
+                </div>
+
                 <h4 class="card-title">@blog.Title</h4>
                 <p class="card-text">@blog.Content.Substring(0, Math.Min(blog.Content.Length, 150))...</p>
                 <a asp-area="Public" asp-controller="Blog" asp-action="Detail" asp-route-id="@blog.Id"
@@ -35,8 +43,8 @@ else
         </div>
     }
 
-    <nav>
-        <ul class="pagination">
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
             @for (int i = 1; i <= Math.Ceiling((double)Model.PagedBlogs.TotalCount / Model.PagedBlogs.PageSize); i++)
             {
                 <li class="page-item @(i == Model.PagedBlogs.CurrentPage ? "active" : "")">

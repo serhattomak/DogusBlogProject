@@ -5,7 +5,7 @@ using MediatR;
 
 namespace DogusProject.Application.Features.Blogs.Queries;
 
-public class GetBlogsByCategoryIdQuery : PagedRequest, IRequest<Result<PagedResult<BlogResponseDto>>>
+public class GetBlogsByCategoryIdQuery : PagedRequest, IRequest<Result<Domain.Common.PagedResult<BlogResponseDto>>>
 {
 	public Guid CategoryId { get; set; }
 

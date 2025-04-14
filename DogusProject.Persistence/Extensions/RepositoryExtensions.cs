@@ -12,20 +12,7 @@ public static class RepositoryExtensions
 	public static IServiceCollection AddRepositories(this IServiceCollection services, IConfiguration configuration)
 	{
 		services.AddDbContext<AppIdentityDbContext>(options =>
-		{
-			var connectionString = configuration.GetConnectionString("DefaultConnection");
-
-			if (connectionString == "UseEnv")
-			{
-				connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
-			}
-
-			Console.WriteLine($"[ENV TEST] DB_CONNECTION_STRING = {connectionString}");
-			Console.WriteLine($"[ENV] Connection string read from ENV: {(string.IsNullOrWhiteSpace(connectionString) ? "NULL or empty!" : "LOADED")}");
-
-
-			options.UseNpgsql(connectionString);
-		});
+			options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
 		services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
 		services.AddScoped<IBlogRepository, BlogRepository>();

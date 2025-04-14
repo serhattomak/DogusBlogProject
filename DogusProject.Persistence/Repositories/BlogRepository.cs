@@ -119,6 +119,7 @@ public class BlogRepository(AppIdentityDbContext context, UserManager<AppUser> u
 		var query = _context.Blogs
 			.Include(b => b.BlogImages)
 			.Include(b => b.Category)
+			.Include(bt => bt.BlogTags)
 			.OrderByDescending(b => b.CreatedAt);
 
 		var totalCount = await query.CountAsync();
