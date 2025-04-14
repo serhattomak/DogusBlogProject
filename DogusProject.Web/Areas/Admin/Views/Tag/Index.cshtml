@@ -4,28 +4,47 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Etiketler</h2>
-<a asp-area="Admin" asp-controller="Tag" asp-action="Create" class="btn btn-primary mb-3 rounded-pill">+ Yeni Etiket</a>
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0">🏷️ Etiketler</h2>
+        <a asp-area="Admin" asp-controller="Tag" asp-action="Create" class="btn btn-primary rounded-pill">
+            <i class="bi bi-plus-circle me-1"></i> Yeni Etiket
+        </a>
+    </div>
 
-<table class="table table-bordered">
-    <thead>
-    <tr>
-        <th>Adı</th>
-        <th>İşlemler</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var tag in Model)
+    @if (Model.Any())
     {
-        <tr>
-            <td>@tag.Name</td>
-            <td>
-                <a asp-area="Admin" asp-controller="Tag" asp-action="Edit" asp-route-id="@tag.Id" class="btn btn-sm btn-warning rounded-pill">Düzenle</a>
-                <form asp-area="Admin" asp-controller="Tag" asp-action="Delete" asp-route-id="@tag.Id" method="post" class="d-inline">
-                    <button type="submit" class="btn btn-sm btn-danger rounded-pill" onclick="return confirm('Silmek istediğinize emin misiniz?')">Sil</button>
-                </form>
-            </td>
-        </tr>
+        <div class="table-responsive rounded shadow-sm">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Adı</th>
+                        <th class="text-end">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var tag in Model)
+                    {
+                        <tr>
+                            <td class="fw-semibold">@tag.Name</td>
+                            <td class="text-end">
+                                <a asp-area="Admin" asp-controller="Tag" asp-action="Edit" asp-route-id="@tag.Id" class="btn btn-sm btn-outline-warning rounded-pill me-2">
+                                    <i class="bi bi-pencil"></i> Düzenle
+                                </a>
+                                <form asp-area="Admin" asp-controller="Tag" asp-action="Delete" asp-route-id="@tag.Id" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill" onclick="return confirm('Silmek istediğinize emin misiniz?')">
+                                        <i class="bi bi-trash"></i> Sil
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     }
-    </tbody>
-</table>
+    else
+    {
+        <div class="alert alert-info">Henüz etiket oluşturulmamış.</div>
+    }
+</div>

@@ -4,18 +4,35 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Yeni Etiket</h2>
-
-<form asp-area="Admin" asp-controller="Tag" asp-action="Create" method="post">
-    <div class="mb-3">
-        <label asp-for="Name" class="form-label">Etiket İsmi</label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0">🏷️ Yeni Etiket</h2>
+        <a asp-action="Index" class="btn btn-outline-secondary rounded-pill">
+            <i class="bi bi-arrow-left"></i> Geri Dön
+        </a>
     </div>
 
-    <button type="submit" class="btn btn-primary rounded-pill">Oluştur</button>
-    <a asp-action="Index" class="btn btn-secondary rounded-pill">Geri Dön</a>
-</form>
+    <div class="card shadow-sm rounded-4">
+        <div class="card-body p-4">
+            <form asp-area="Admin" asp-controller="Tag" asp-action="Create" method="post">
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label fw-semibold">Etiket İsmi</label>
+                    <input asp-for="Name" class="form-control" placeholder="#etiket" />
+                    <span asp-validation-for="Name" class="text-danger small"></span>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary rounded-pill">
+                        <i class="bi bi-check-circle me-1"></i> Oluştur
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary rounded-pill">
+                        İptal
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
