@@ -2,49 +2,50 @@
 
 @foreach (var blog in Model)
 {
-    <div class="card mb-3 twitter-card">
-        <div class="card-body">
-            <div class="d-flex">
-                <div class="me-3">
-                    <img src="@(!string.IsNullOrEmpty(blog.AuthorAvatarUrl) ? blog.AuthorAvatarUrl : "/images/default-avatar.png")"
-                         alt="Author Avatar"
-                         class="rounded-circle"
-                         width="48" height="48" />
+    <div class="card mb-4 border-0 shadow-sm rounded-4">
+        <div class="card-body p-4">
+
+            <div class="d-flex align-items-center mb-3">
+                <img src="@(!string.IsNullOrEmpty(blog.AuthorAvatarUrl) ? blog.AuthorAvatarUrl : "/images/default-avatar.png")"
+                     class="rounded-circle me-3"
+                     width="48" height="48"
+                     alt="Avatar" />
+                <div>
+                    <h6 class="mb-0 fw-semibold">@blog.AuthorFullName</h6>
+                    <small class="text-muted">@blog.CreatedAt.ToString("dd MMM yyyy")</small>
                 </div>
-                <div class="flex-grow-1">
-                    <div class="d-flex align-items-center mb-1">
-                        <span class="fw-bold blog-post-author me-2">@blog.AuthorFullName</span>
-                        <span class="blog-post-timestamp">· @blog.CreatedAt.ToString("dd MMM yyyy")</span>
-                    </div>
+            </div>
 
-                    <h2 class="fw-bold fs-5 mb-1">@blog.Title</h2>
-                    <p class="blog-post-content text-truncate">@blog.Content</p>
+            <h5 class="fw-bold mb-2">@blog.Title</h5>
+            <p class="text-muted text-truncate">@blog.Content</p>
 
-                    @if (blog.ImageUrls != null && blog.ImageUrls.Any())
+            @if (blog.ImageUrls != null && blog.ImageUrls.Any())
+            {
+                <div class="row g-2 mb-3">
+                    @foreach (var imageUrl in blog.ImageUrls.Take(4))
                     {
-                        <div class="row mb-2">
-                            @foreach (var imageUrl in blog.ImageUrls.Take(4))
-                            {
-                                <div class="col-6 col-md-3 mb-2">
-                                    <img src="@imageUrl" alt="Blog Görseli" class="img-fluid rounded" />
-                                </div>
-                            }
+                        <div class="col-6 col-md-3">
+                            <img src="@imageUrl" class="img-fluid rounded w-100" style="object-fit: cover; aspect-ratio: 4 / 3;" alt="Blog Görseli" />
                         </div>
                     }
-                    else
-                    {
-                        <img src="~/images/placeholder.jpg" class="card-img-top rounded-top"
-                             style="max-height: 300px; object-fit: cover;" alt="Varsayılan Görsel" />
-                    }
-
-                    <div class="blog-post-tags mb-2">
-                        <span class="badge bg-secondary text-white">@blog.CategoryName</span>
-                    </div>
-                    
-                    <a asp-area="Public" asp-controller="Blog" asp-action="Detail" asp-route-id="@blog.Id" class="btn btn-outline-primary btn-sm rounded-pill">
-                        Detaylar
-                    </a>
                 </div>
+            }
+            else
+            {
+                <img src="~/images/placeholder.jpg" class="img-fluid rounded w-100 mb-3"
+                     style="max-height: 250px; object-fit: cover;" alt="Varsayılan Görsel" />
+            }
+
+            <div class="d-flex justify-content-between align-items-center mt-2">
+                <span class="badge bg-light text-dark border">@blog.CategoryName</span>
+
+                <a asp-area="Public"
+                   asp-controller="Blog"
+                   asp-action="Detail"
+                   asp-route-id="@blog.Id"
+                   class="btn btn-sm btn-outline-primary rounded-pill">
+                    Detaylar
+                </a>
             </div>
         </div>
     </div>

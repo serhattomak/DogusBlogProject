@@ -4,6 +4,10 @@ namespace DogusProject.Web.Models.Auth.DTOs;
 
 public class RegisterRequestDto
 {
+	[Required(ErrorMessage = "Ad boş bırakılamaz.")]
+	public string FirstName { get; set; } = string.Empty;
+	[Required(ErrorMessage = "Soyad boş bırakılamaz.")]
+	public string LastName { get; set; } = string.Empty;
 	[Required(ErrorMessage = "Kullanıcı adı boş bırakılamaz.")]
 	public string UserName { get; set; } = string.Empty;
 

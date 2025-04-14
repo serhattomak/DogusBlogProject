@@ -2,23 +2,39 @@
 
 @if (!Model.Any())
 {
-    <div class="card">
-        <div class="card-body text-center text-secondary">
+    <div class="card border-0 shadow-sm">
+        <div class="card-body text-center text-muted">
+            <i class="bi bi-chat-dots fs-4 mb-2 d-block"></i>
             Henüz yorum yapmadınız.
         </div>
     </div>
 }
 else
 {
-    @foreach (var comment in Model)
-    {
-        <div class="card mb-3">
-            <div class="card-body">
-                <p class="mb-2">@comment.Content</p>
-                <small class="text-muted">
-                    @comment.CreatedAt.ToString("dd MMMM yyyy HH:mm") | Blog: <a asp-area="Public" asp-controller="Blog" asp-action="Detail" asp-route-id="@comment.BlogId"><strong>@comment.BlogTitle</strong></a>
-                </small>
+    <div class="vstack gap-3">
+        @foreach (var comment in Model)
+        {
+            <div class="border rounded shadow-sm p-3 bg-white">
+                <p class="mb-2 fs-6">@comment.Content</p>
+
+                <div class="d-flex justify-content-between align-items-center text-secondary small">
+                    <span>
+                        <i class="bi bi-clock me-1"></i>
+                        @comment.CreatedAt.ToString("dd MMMM yyyy HH:mm")
+                    </span>
+                    <span>
+                        <i class="bi bi-journal-text me-1"></i>
+                        Blog: 
+                        <a asp-area="Public"
+                           asp-controller="Blog"
+                           asp-action="Detail"
+                           asp-route-id="@comment.BlogId"
+                           class="fw-semibold text-decoration-none">
+                            @comment.BlogTitle
+                        </a>
+                    </span>
+                </div>
             </div>
-        </div>
-    }
+        }
+    </div>
 }

@@ -6,104 +6,73 @@
 
 <div class="profile-header"></div>
 
-<div class="px-3">
-    <div class="d-flex justify-content-between align-items-start">
-        <img src="@Model.AvatarUrl"
-             alt="Profil Resmi"
-             class="rounded-circle profile-avatar"
-             width="96"
-             height="96" />
+<div class="container py-4 px-3">
+    <div class="d-flex align-items-start">
+        <div class="me-4 position-relative" style="margin-top: -20px;">
+            <img src="@Model.AvatarUrl" alt="Profil Resmi" class="rounded-circle border border-3" width="120" height="120" />
+        </div>
 
-        <a asp-area="Auth" asp-controller="Auth" asp-action="EditProfile" class="btn btn-primary mt-3">
-            Profili Düzenle
-        </a>
-    </div>
+        <div class="flex-grow-1">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h3 class="mb-0 fw-bold">@Model.FullName</h3>
+                    <p class="text-muted mb-1">@Model.UserName</p>
+                </div>
 
-    <div class="mt-2">
-        <h2 class="fs-4 fw-bold mb-0" id="profile-name">@Model.FullName</h2>
-        <p class="text-secondary" id="profile-username">@Model.UserName</p>
-    </div>
-
-    <p class="my-3" id="profile-bio">@Model.Bio</p>
-
-    <div class="d-flex flex-wrap gap-3 text-secondary mb-2">
-        @if (!string.IsNullOrWhiteSpace(Model.Location))
-        {
-            <div class="d-flex align-items-center">
-                <i class="bi bi-geo-alt me-1"></i>
-                <span>@Model.Location</span>
+                <a asp-area="Auth" asp-controller="Auth" asp-action="EditProfile" class="btn btn-outline-primary rounded-pill">Profili Düzenle</a>
             </div>
-        }
-        @if (!string.IsNullOrWhiteSpace(Model.Website))
-        {
-            <div class="d-flex align-items-center">
-                <i class="bi bi-link-45deg me-1"></i>
-                <a href="@Model.Website" class="text-primary text-decoration-none">@Model.Website</a>
+
+            @if (!string.IsNullOrWhiteSpace(Model.Bio))
+            {
+                <p class="mt-3">@Model.Bio</p>
+            }
+
+            <div class="d-flex flex-wrap gap-3 text-muted small mt-2">
+                @if (!string.IsNullOrWhiteSpace(Model.Location))
+                {
+                    <div><i class="bi bi-geo-alt me-1"></i>@Model.Location</div>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.Website))
+                {
+                    <div><i class="bi bi-link-45deg me-1"></i><a href="@Model.Website" class="text-primary text-decoration-none" target="_blank">@Model.Website</a></div>
+                }
+                <div><i class="bi bi-calendar me-1"></i>Katılım: @Model.JoinedDate.ToString("MMMM yyyy")</div>
             </div>
-        }
-        <div class="d-flex align-items-center">
-            <i class="bi bi-calendar3 me-1"></i>
-            <span id="profile-joined">Katıldı: @Model.JoinedDate.ToString("MMMM yyyy")</span>
         </div>
     </div>
 
-    <div class="d-flex gap-4 profile-stats">
+    <div class="d-flex gap-4 border-top pt-3 mt-4">
         <div>
             <span class="fw-bold">@Model.Blogs.Count</span>
-            <span class="ms-1">Yayınlanan Blog</span>
+            <span class="ms-1 text-muted">Blog</span>
         </div>
         <div>
             <span class="fw-bold">@Model.Comments.Count</span>
-            <span class="ms-1">Yapılan Yorum</span>
+            <span class="ms-1 text-muted">Yorum</span>
         </div>
-        @* <div>
-            <span class="fw-bold">@Model.Blogs.Count</span>
-            <span class="ms-1">Blog</span>
-        </div> *@
     </div>
-</div>
 
-<ul class="nav nav-tabs mt-4" id="profileTabs" role="tablist">
-    <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="posts-tab" data-bs-toggle="tab" data-bs-target="#posts"
-                type="button" role="tab" aria-controls="posts" aria-selected="true">
-            Bloglar
-        </button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="comments-tab" data-bs-toggle="tab" data-bs-target="#comments"
-                type="button" role="tab" aria-controls="comments" aria-selected="false">
-            Yorumlar
-        </button>
-    </li>
-    @* <li class="nav-item" role="presentation">
-        <button class="nav-link" id="bookmarks-tab" data-bs-toggle="tab" data-bs-target="#bookmarks"
-                type="button" role="tab" aria-controls="bookmarks" aria-selected="false">
-            Kaydedilenler
-        </button>
-    </li> *@
-</ul>
+    <ul class="nav nav-tabs mt-4" id="profileTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="posts-tab" data-bs-toggle="tab" data-bs-target="#posts"
+                    type="button" role="tab" aria-controls="posts" aria-selected="true">
+                Bloglar
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="comments-tab" data-bs-toggle="tab" data-bs-target="#comments"
+                    type="button" role="tab" aria-controls="comments" aria-selected="false">
+                Yorumlar
+            </button>
+        </li>
+    </ul>
 
-<div class="tab-content" id="profileTabsContent">
-    <div class="tab-pane fade show active" id="posts" role="tabpanel" aria-labelledby="posts-tab">
-        <div class="px-3" id="profile-posts">
+    <div class="tab-content mt-3" id="profileTabsContent">
+        <div class="tab-pane fade show active" id="posts" role="tabpanel" aria-labelledby="posts-tab">
             @await Html.PartialAsync("_MyBlogPostsPartial", Model.Blogs)
         </div>
-    </div>
-
-    <div class="tab-pane fade" id="comments" role="tabpanel" aria-labelledby="comments-tab">
-        <div class="p-3">
+        <div class="tab-pane fade" id="comments" role="tabpanel" aria-labelledby="comments-tab">
             @await Html.PartialAsync("_MyCommentsPartial", Model.Comments)
         </div>
     </div>
-
-    @* <div class="tab-pane fade" id="bookmarks" role="tabpanel" aria-labelledby="bookmarks-tab">
-        <div class="p-3">
-            <div class="card">
-                <div class="card-body text-center text-secondary">
-                    Kaydettiğiniz içerikler burada listelenecek.
-                </div>
-            </div>
-        </div>
-    </div> *@
 </div>
