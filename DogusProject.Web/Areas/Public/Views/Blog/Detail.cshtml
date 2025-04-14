@@ -4,142 +4,138 @@
     ViewData["Title"] = Model.Blog?.Title ?? "Blog Detay";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 @if (Model?.Blog == null)
 {
     <div class="alert alert-danger">Blog bulunamadı.</div>
 }
 else
 {
-    <div class="card mb-4">
-        <div class="card-body">
+    <div class="container py-4">
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body p-4">
 
-            <h2 class="card-title">@Model.Blog.Title</h2>
+                <h2 class="fw-bold mb-2">@Model.Blog.Title</h2>
 
-            <p class="text-muted">
-                <small>
-                    Kategori: <span class="badge bg-info">
-                        <a asp-area="Public"
-                           asp-controller="Category"
-                           asp-action="BlogsByCategory"
-                           asp-route-id="@Model.Blog.Category.Id"
-                           class="text-decoration-none fw-semibold text-primary">
+                <div class="d-flex flex-wrap align-items-center text-secondary small mb-3">
+                    <div class="me-3">
+                        <i class="bi bi-folder-fill me-1"></i>
+                        <a asp-area="Public" asp-controller="Category" asp-action="BlogsByCategory" asp-route-id="@Model.Blog.Category.Id" class="text-decoration-none fw-semibold text-primary">
                             @Model.Blog.Category.Name
                         </a>
-                    </span>
-                </small> |
-                <small>Yazar: @Model.Blog.Author</small> |
-                <small>Oluşturulma: @Model.Blog.CreatedAt.ToString("dd.MM.yyyy HH:mm")</small>
-            </p>
-
-            @if (Model.Blog.ImageUrls != null && Model.Blog.ImageUrls.Any())
-            {
-                <div class="text-center mb-4">
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#imageModal">
-                        <img src="@Model.Blog.ImageUrls.First()" 
-                             alt="Blog Görseli" 
-                             class="img-fluid rounded shadow-sm" 
-                             style="max-height: 500px; object-fit: contain;" />
-                    </a>
+                    </div>
+                    <div class="me-3">
+                        <i class="bi bi-person-fill me-1"></i>@Model.Blog.Author
+                    </div>
+                    <div>
+                        <i class="bi bi-clock me-1"></i>@Model.Blog.CreatedAt.ToString("dd.MM.yyyy HH:mm")
+                    </div>
                 </div>
-            }
 
-            @if (Model.Blog.ImageUrls.Count > 0)
-            {
-                var modalId = "imageModal";
-                var carouselId = "modalCarousel";
+                @if (Model.Blog.ImageUrls?.Any() == true)
+                {
+                    <div class="text-center mb-4">
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#imageModal">
+                            <img src="@Model.Blog.ImageUrls.First()"
+                                 class="img-fluid rounded shadow-sm"
+                                 style="max-height: 500px; object-fit: contain;"
+                                 alt="Blog Görseli" />
+                        </a>
+                    </div>
+                }
 
-                <div class="modal fade" id="@modalId" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-body p-0">
-                                <div id="@carouselId" class="carousel slide" data-bs-ride="carousel">
-                                    <div class="carousel-inner">
-                                        @for (int i = 0; i < Model.Blog.ImageUrls.Count; i++)
-                                        {
-                                            var imageUrl = Model.Blog.ImageUrls[i];
-                                            <div class="carousel-item @(i == 0 ? "active" : "")">
-                                                <img src="@imageUrl" class="d-block w-100"
-                                                     style="max-height: 500px; object-fit: contain;" alt="Görsel @(i + 1)" />
-                                            </div>
-                                        }
+                @if (Model.Blog.ImageUrls.Count > 0)
+                {
+                    var modalId = "imageModal";
+                    var carouselId = "modalCarousel";
+
+                    <div class="modal fade" id="@modalId" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-body p-0">
+                                    <div id="@carouselId" class="carousel slide" data-bs-ride="carousel">
+                                        <div class="carousel-inner">
+                                            @for (int i = 0; i < Model.Blog.ImageUrls.Count; i++)
+                                            {
+                                                <div class="carousel-item @(i == 0 ? "active" : "")">
+                                                    <img src="@Model.Blog.ImageUrls[i]" class="d-block w-100" style="max-height: 500px; object-fit: contain;" alt="Görsel @(i + 1)" />
+                                                </div>
+                                            }
+                                        </div>
+                                        <button class="carousel-control-prev" type="button" data-bs-target="#@carouselId" data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Önceki</span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button" data-bs-target="#@carouselId" data-bs-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Sonraki</span>
+                                        </button>
                                     </div>
-                                    <button class="carousel-control-prev" type="button" data-bs-target="#@carouselId" data-bs-slide="prev">
-                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                        <span class="visually-hidden">Önceki</span>
-                                    </button>
-                                    <button class="carousel-control-next" type="button" data-bs-target="#@carouselId" data-bs-slide="next">
-                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                        <span class="visually-hidden">Sonraki</span>
-                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
+                }
+
+                <div class="mb-3">
+                    @foreach (var tag in Model.Blog.Tags)
+                    {
+                        <a asp-area="Public" asp-controller="Tag" asp-action="BlogsByTag" asp-route-id="@tag.Id" class="badge bg-light text-dark border me-2">
+                            #@tag.Name
+                        </a>
+                    }
+                </div>
+
+                <p class="lead">@Model.Blog.Content</p>
+            </div>
+        </div>
+
+        <div class="mt-5">
+            <h4 class="fw-bold mb-3">💬 Yorumlar (@Model.Comments.Count)</h4>
+
+            @if (Model.Comments.Any())
+            {
+                <div class="vstack gap-3">
+                    @foreach (var comment in Model.Comments)
+                    {
+                        <div class="border rounded-3 p-3 shadow-sm">
+                            <p class="mb-1">@comment.Content</p>
+                            <small class="text-muted">@comment.CreatedAt.ToString("dd.MM.yyyy HH:mm") - @comment.AuthorFullName</small>
+                        </div>
+                    }
                 </div>
             }
+            else
+            {
+                <div class="alert alert-info">Henüz yorum yapılmamış.</div>
+            }
+        </div>
 
+        <div class="mt-5">
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <h5 class="fw-semibold">✍️ Yorum Yaz</h5>
+                <form asp-action="Detail" asp-route-id="@Model.Blog.Id" method="post" class="mt-3">
+                    @Html.AntiForgeryToken()
 
-            <div class="mb-3">
-                @foreach (var tag in Model.Blog.Tags)
-                {
-                    <a asp-area="Public"
-                       asp-controller="Tag"
-                       asp-action="BlogsByTag"
-                       asp-route-id="@tag.Id"
-                       class="badge bg-light text-dark border me-1">
-                        #@tag.Name
-                    </a>
-                }
-            </div>
+                    <input type="hidden" name="BlogId" value="@Model.Blog.Id" />
 
-            <p class="card-text">@Model.Blog.Content</p>
+                    <div class="mb-3">
+                        <textarea name="Content" class="form-control" rows="4" placeholder="Yorumunuzu yazın..."></textarea>
+                    </div>
 
+                    <button type="submit" class="btn btn-primary rounded-pill px-4">Gönder</button>
+                </form>
+            }
+            else
+            {
+                <div class="alert alert-warning">
+                    Yorum yapabilmek için <a asp-area="Auth" asp-controller="Auth" asp-action="Login" class="text-decoration-underline">giriş yapmalısınız</a>.
+                </div>
+            }
         </div>
     </div>
-
-
-    <hr />
-
-    <h4>Yorumlar (@Model.Comments.Count)</h4>
-
-    @if (Model.Comments.Any())
-    {
-        @foreach (var comment in Model.Comments)
-        {
-            <div class="mb-3 p-3 border rounded shadow-sm">
-                <p class="mb-1">@comment.Content</p>
-                <small class="text-muted">@comment.CreatedAt.ToString("dd.MM.yyyy HH:mm") - @comment.AuthorFullName</small>
-            </div>
-        }
-    }
-    else
-    {
-        <div class="alert alert-info">Henüz yorum yapılmamış.</div>
-    }
-
-    <hr />
-
-    @if (User.Identity!.IsAuthenticated)
-    {
-        <h5>Yorum Yaz</h5>
-        <form asp-action="Detail" asp-route-id="@Model.Blog.Id" method="post">
-            @Html.AntiForgeryToken()
-
-            <input type="hidden" name="BlogId" value="@Model.Blog.Id" />
-
-            <div class="mb-3">
-                <textarea name="Content" class="form-control" rows="3" placeholder="Yorumunuzu yazın..."></textarea>
-            </div>
-
-            <button type="submit" class="btn btn-primary rounded-pill">Yorum Yap</button>
-        </form>
-    }
-    else
-    {
-        <div class="alert alert-warning">Yorum yapabilmek için <a asp-area="Auth" asp-controller="Auth" asp-action="Login">giriş yapmalısınız</a>.</div>
-    }
 }
-
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
