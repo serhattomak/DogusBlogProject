@@ -22,11 +22,20 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 builder.Services.AddHttpClient("ApiClient", client =>
 	{
-		client.BaseAddress = new Uri("https://localhost:7174/api/");
+		client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]);
 		client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 	})
 	.AddHttpMessageHandler<AuthorizationHandler>();
 
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy("AllowFrontend", policy =>
+	{
+		policy.WithOrigins("https://dogusprojectweb.azurewebsites.net/api/")
+			.AllowAnyHeader()
+			.AllowAnyMethod();
+	});
+});
 
 var app = builder.Build();
 
@@ -42,6 +51,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseCors("AllowFrontend");
 
 app.UseSession();
 
