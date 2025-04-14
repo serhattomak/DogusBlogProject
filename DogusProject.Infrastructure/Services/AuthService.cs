@@ -45,7 +45,7 @@ public class AuthService : IAuthService
 			_logger.LogError("User registration failed: {Errors}", string.Join(", ", result.Errors.Select(e => e.Description)));
 			return Result.FailureResult(result.Errors.Select(e => e.Description).ToList());
 		}
-		await _userManager.AddToRoleAsync(user, "User");
+		await _userManager.AddToRoleAsync(user, "Author");
 		await _signInManager.SignInAsync(user, isPersistent: false);
 		var roles = await _userManager.GetRolesAsync(user);
 		return Result.SuccessResult("User created successfully.");

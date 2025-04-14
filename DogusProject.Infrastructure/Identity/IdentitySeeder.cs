@@ -28,6 +28,8 @@ public static class IdentitySeeder
 			var user = new AppUser
 			{
 				UserName = "admin",
+				FirstName = "Admin",
+				LastName = "User",
 				Email = adminEmail,
 				EmailConfirmed = true
 			};

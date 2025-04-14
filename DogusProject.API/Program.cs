@@ -5,7 +5,9 @@ using DogusProject.Application.Validators;
 using DogusProject.Infrastructure.Extensions;
 using DogusProject.Infrastructure.Identity;
 using DogusProject.Infrastructure.Mappings;
+using DogusProject.Persistence.Context;
 using DogusProject.Persistence.Extensions;
+using DogusProject.Persistence.SeedData;
 using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -46,5 +48,11 @@ app.UseAuthorization();
 app.MapControllers();
 
 await IdentitySeeder.SeedDefaultRolesAsync(app.Services);
+
+using (var scope = app.Services.CreateScope())
+{
+	var context = scope.ServiceProvider.GetRequiredService<AppIdentityDbContext>();
+	await SeedData.SeedAsync(context);
+}
 
 app.Run();

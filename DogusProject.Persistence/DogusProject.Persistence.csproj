@@ -25,4 +25,8 @@
     <ProjectReference Include="..\DogusProject.Infrastructure\DogusProject.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="SeedData\" />
+  </ItemGroup>
+
 </Project>
