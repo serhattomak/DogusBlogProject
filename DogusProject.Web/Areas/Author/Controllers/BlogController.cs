@@ -1,5 +1,4 @@
-﻿using DogusProject.Application.Features.BlogImages.Dtos;
-using DogusProject.Web.Controllers;
+﻿using DogusProject.Web.Controllers;
 using DogusProject.Web.Models.Blog.ViewModels;
 using DogusProject.Web.Models.Category.DTOs;
 using DogusProject.Web.Models.Common;
@@ -240,11 +239,6 @@ namespace DogusProject.Web.Areas.Author.Controllers
 				return HandleApiFailure("Blog güncellenemedi.", model);
 			}
 
-			var imageResponse = await _client.GetAsync($"blogimage/by-blog/{id}");
-			var imageResult = await imageResponse.Content.ReadFromJsonAsync<Result<List<BlogImageDto>>>();
-
-			model.ExistingImageUrls = imageResult?.Data?.Select(x => x.ImageUrl).ToList() ?? new();
-
 			if (model.Images != null && model.Images.Any())
 			{
 				using var content = new MultipartFormDataContent();
@@ -256,16 +250,16 @@ namespace DogusProject.Web.Areas.Author.Controllers
 				}
 
 				var uploadResponse = await _client.PostAsync($"blogimage/upload/{id}", content);
-
 				if (!uploadResponse.IsSuccessStatusCode)
 				{
 					var errorText = await uploadResponse.Content.ReadAsStringAsync();
-					Console.WriteLine("Görsel güncelleme hatası: " + errorText);
+					Console.WriteLine("Görsel yükleme hatası: " + errorText);
 				}
 			}
 
 			return RedirectToAction("Index");
 		}
+
 
 		[HttpPost("delete/{id}")]
 		[ValidateAntiForgeryToken]

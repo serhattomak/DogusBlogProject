@@ -5,39 +5,67 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>@Model.CategoryName Kategorisine Ait Bloglar</h2>
+<div class="container-fluid mt-4">
+    <h2 class="fw-bold mb-4">@Model.CategoryName Kategorisine Ait Bloglar</h2>
 
-@if (!Model.PagedBlogs.Items.Any())
-{
-    <div class="alert alert-info">Bu kategoriye ait henüz blog yok.</div>
-}
-else
-{
-    @foreach (var blog in Model.PagedBlogs.Items)
+    @if (!Model.PagedBlogs.Items.Any())
     {
-        <div class="card mb-3">
-            <div class="card-body">
-                <h4 class="card-title">@blog.Title</h4>
-                <p class="card-text">@blog.Content.Substring(0, Math.Min(blog.Content.Length, 150))...</p>
-                <a asp-area="Public" asp-controller="Blog" asp-action="Detail" asp-route-id="@blog.Id"
-                   class="btn btn-sm btn-outline-primary rounded-pill">Devamını Oku</a>
-            </div>
-        </div>
+        <div class="alert alert-info">Bu kategoriye ait henüz blog yok.</div>
     }
-
-    <nav>
-        <ul class="pagination">
-            @for (int i = 1; i <= Math.Ceiling((double)Model.PagedBlogs.TotalCount / Model.PagedBlogs.PageSize); i++)
+    else
+    {
+        <div class="vstack gap-4">
+            @foreach (var blog in Model.PagedBlogs.Items)
             {
-                <li class="page-item @(i == Model.PagedBlogs.CurrentPage ? "active" : "")">
-                    <a class="page-link"
-                       asp-area="Public"
-                       asp-controller="Category"
-                       asp-action="BlogsByCategory"
-                       asp-route-id="@Model.CategoryId"
-                       asp-route-page="@i">@i</a>
-                </li>
+                <div class="card shadow-sm border-0">
+                    @if (blog.ImageUrls != null && blog.ImageUrls.Any())
+                    {
+                        <img src="@blog.ImageUrls.First()"
+                             class="card-img-top rounded-top"
+                             alt="Blog Görseli"
+                             style="max-height: 300px; object-fit: cover;" />
+                    }
+                    else
+                    {
+                        <img src="~/images/placeholder.jpg" class="card-img-top rounded-top"
+                             style="max-height: 300px; object-fit: cover;" alt="Varsayılan Görsel" />
+                    }
+
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2">
+                            <div class="text-muted small">
+                                <i class="bi bi-person-fill"></i> @blog.AuthorFullName
+                                &nbsp;|&nbsp;
+                                <i class="bi bi-calendar"></i> @blog.CreatedAt.ToString("dd MMM yyyy")
+                            </div>
+                        </div>
+
+                        <h5 class="fw-semibold">@blog.Title</h5>
+                        <p class="text-truncate text-secondary">@blog.Content</p>
+
+                        <div class="d-flex justify-content-end">
+                            <a asp-area="Public" asp-controller="Blog" asp-action="Detail" asp-route-id="@blog.Id"
+                               class="btn btn-outline-primary btn-sm rounded-pill">Devamını Oku</a>
+                        </div>
+                    </div>
+                </div>
             }
-        </ul>
-    </nav>
-}
+        </div>
+
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                @for (int i = 1; i <= Math.Ceiling((double)Model.PagedBlogs.TotalCount / Model.PagedBlogs.PageSize); i++)
+                {
+                    <li class="page-item @(i == Model.PagedBlogs.CurrentPage ? "active" : "")">
+                        <a class="page-link"
+                           asp-area="Public"
+                           asp-controller="Category"
+                           asp-action="BlogsByCategory"
+                           asp-route-id="@Model.CategoryId"
+                           asp-route-page="@i">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+</div>

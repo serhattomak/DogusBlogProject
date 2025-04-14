@@ -13,4 +13,10 @@ public class BlogImageRepository(AppIdentityDbContext context) : EfRepository<Bl
 			.Where(x => x.BlogId == blogId)
 			.ToListAsync();
 	}
+	public async Task<List<BlogImage>> GetImageUrlsByBlogIdsAsync(List<Guid> blogIds)
+	{
+		return await _context.BlogImages
+			.Where(img => blogIds.Contains(img.BlogId))
+			.ToListAsync();
+	}
 }

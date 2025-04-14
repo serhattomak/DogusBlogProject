@@ -110,5 +110,15 @@
                 <a class="btn btn-outline-primary w-50 rounded-pill" asp-area="Auth" asp-controller="Auth" asp-action="Register">Kayıt Ol</a>
             </div>
         }
+        @if (isAuthenticated)
+        {
+            <div class="mt-4 border-top pt-3">
+                <form asp-area="Auth" asp-controller="Auth" asp-action="Logout" method="post">
+                    <button type="submit" class="btn btn-outline-danger w-100 rounded-pill">
+                        <i class="bi bi-box-arrow-right me-2 rounded-pill"></i> Çıkış Yap
+                    </button>
+                </form>
+            </div>
+        }
     </div>
 </div>

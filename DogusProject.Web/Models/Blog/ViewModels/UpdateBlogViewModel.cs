@@ -22,5 +22,5 @@ public class UpdateBlogViewModel
 	public string? NewTags { get; set; }
 	public List<CategoryDto> Categories { get; set; } = new();
 	public List<IFormFile>? Images { get; set; }
-	public List<string> ExistingImageUrls { get; set; } = new();
+	public List<(Guid Id, string Url)> ExistingImages { get; set; } = new();
 }

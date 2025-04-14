@@ -54,18 +54,22 @@
         <div id="imagePreviewContainer" class="d-flex flex-wrap gap-2 mt-3"></div>
     </div>
     
-    @if (Model.ExistingImageUrls != null && Model.ExistingImageUrls.Any())
+    @if (Model.ExistingImages?.Any() == true)
     {
         <div class="mb-3">
-            <label class="form-label">Mevcut Görseller</label>
+            <label class="form-label">Yüklenen Görseller</label>
             <div class="d-flex flex-wrap gap-2">
-                @foreach (var imageUrl in Model.ExistingImageUrls)
+                @foreach (var image in Model.ExistingImages)
                 {
                     <div class="position-relative">
-                        <img src="@imageUrl" class="rounded" style="width:100px;height:100px;object-fit:cover;" />
-                        <!-- <form asp-controller="BlogImage" asp-action="Delete" asp-route-id="IMAGE_ID" method="post">
-                            <button class="btn btn-sm btn-danger position-absolute top-0 end-0">×</button></form>
-                        -->
+                        <img src="@image.Url" width="100" height="100" class="rounded border" />
+                        <form asp-area="Author" asp-controller="BlogImage" asp-action="Delete" method="post" class="position-absolute top-0 end-0">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@image.Id" />
+                            <button type="submit" class="btn btn-sm btn-danger rounded-circle" title="Sil">
+                                <i class="bi bi-x"></i>
+                            </button>
+                        </form>
                     </div>
                 }
             </div>
