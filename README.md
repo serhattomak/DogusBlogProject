@@ -2,6 +2,12 @@
 
 DogusProject, ASP.NET Core MVC ile geliştirilmiş Clean Architecture yapısını benimseyen, kullanıcıların blog yazıları oluşturup yönetebildiği, yetkilendirme ve kimlik doğrulama sistemlerini içeren tam donanımlı bir web uygulamasıdır. 
 
+**Projenin MVC Linki**: https://dogusprojectweb20250414103240-c2b0dmgkd7dphbct.canadacentral-01.azurewebsites.net/
+
+**Projenin API Linki**: https://dogusprojectapi20250414000605-fjaxhfe9gvfcfdej.germanywestcentral-01.azurewebsites.net/swagger/index.html
+
+*Not: API güvenliği için bu aşamada herhangi bir önlem alınmamıştır.* 
+
 ## İçindekiler
 - [Proje Mimarisi](#proje-mimarisi)
 - [Katmanlar](#katmanlar)
