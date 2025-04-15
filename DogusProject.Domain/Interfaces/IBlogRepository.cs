@@ -16,5 +16,6 @@ public interface IBlogRepository : IRepository<Blog>
 	Task<List<(Blog Blog, string? AuthorFullName, string? AuthorAvatarUrl)>>
 		GetBlogsWithAuthorInfoByAuthorIdAsync(Guid authorId);
 	Task<PagedResult<(Blog Blog, string? AuthorFullName, string? AuthorAvatarUrl)>> GetAllBlogsWithAuthorInfoAsync(int page, int pageSize);
+	Task AddBlogTagsAsync(List<BlogTag> blogTags);
 	Task RemoveBlogTagsAsync(Guid blogId);
 }

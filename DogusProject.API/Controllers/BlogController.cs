@@ -129,5 +129,12 @@ namespace DogusProject.API.Controllers
 			var result = await _mediator.Send(new GetAllBlogsWithAuthorQuery(page, pageSize));
 			return Ok(result);
 		}
+		[HttpGet("for-edit/{id}")]
+		[Authorize(Roles = "Author,Admin")]
+		public async Task<IActionResult> GetForEdit(Guid id)
+		{
+			var result = await _mediator.Send(new GetBlogByIdForEditQuery(id));
+			return result.Success ? Ok(result) : NotFound(result);
+		}
 	}
 }

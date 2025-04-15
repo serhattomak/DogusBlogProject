@@ -92,6 +92,7 @@ public class BlogRepository(AppIdentityDbContext context, UserManager<AppUser> u
 			.Include(b => b.Category)
 			.Include(b => b.BlogTags)
 			.ThenInclude(bt => bt.Tag)
+			.AsTracking()
 			.FirstOrDefaultAsync(b => b.Id == id);
 	}
 	public async Task<List<(Blog Blog, string? AuthorFullName, string? AuthorAvatarUrl)>> GetBlogsWithAuthorInfoByAuthorIdAsync(Guid authorId)
@@ -163,6 +164,14 @@ public class BlogRepository(AppIdentityDbContext context, UserManager<AppUser> u
 		var authorFullName = user is null ? null : $"{user.FirstName} {user.LastName}";
 
 		return (blog, authorFullName);
+	}
+
+	public async Task AddBlogTagsAsync(List<BlogTag> blogTags)
+	{
+		if (blogTags.Any())
+		{
+			await _context.BlogTags.AddRangeAsync(blogTags);
+		}
 	}
 
 	public async Task RemoveBlogTagsAsync(Guid blogId)

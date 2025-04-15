@@ -7,4 +7,5 @@ public class UpdateBlogDto
 	public string Content { get; set; } = string.Empty;
 	public Guid CategoryId { get; set; }
 	public List<Guid> TagIds { get; set; } = new();
+	public List<(Guid Id, string Url)> ExistingImages { get; set; } = new();
 }

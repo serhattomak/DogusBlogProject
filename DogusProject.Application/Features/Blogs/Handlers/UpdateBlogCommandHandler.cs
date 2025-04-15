@@ -20,7 +20,7 @@ public class UpdateBlogCommandHandler : IRequestHandler<UpdateBlogCommand, Resul
 
 	public async Task<Result> Handle(UpdateBlogCommand request, CancellationToken cancellationToken)
 	{
-		var blog = await _repository.GetByIdAsync(request.Blog.Id);
+		var blog = await _repository.GetByIdWithCategoryAndTagsAsync(request.Blog.Id);
 		if (blog == null)
 			return Result.FailureResult("Blog has not found.");
 
@@ -32,13 +32,15 @@ public class UpdateBlogCommandHandler : IRequestHandler<UpdateBlogCommand, Resul
 
 		await _repository.RemoveBlogTagsAsync(blog.Id);
 
-		blog.BlogTags = request.Blog.TagIds
+		var newTags = (request.Blog.TagIds ?? new List<Guid>())
 			.Distinct()
 			.Select(tagId => new BlogTag
 			{
 				BlogId = blog.Id,
 				TagId = tagId
 			}).ToList();
+
+		await _repository.AddBlogTagsAsync(newTags);
 
 		try
 		{

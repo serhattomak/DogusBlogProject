@@ -1,4 +1,5 @@
-﻿using DogusProject.Web.Controllers;
+﻿using DogusProject.Application.Features.BlogImages.Dtos;
+using DogusProject.Web.Controllers;
 using DogusProject.Web.Models.Blog.ViewModels;
 using DogusProject.Web.Models.Category.DTOs;
 using DogusProject.Web.Models.Common;
@@ -161,7 +162,7 @@ namespace DogusProject.Web.Areas.Author.Controllers
 		[HttpGet("edit/{id}")]
 		public async Task<IActionResult> Edit(Guid id)
 		{
-			var blogResponse = await _client.GetAsync($"blog/{id}");
+			var blogResponse = await _client.GetAsync($"blog/for-edit/{id}");
 			if (!blogResponse.IsSuccessStatusCode)
 			{
 				TempData["Error"] = "Blog bulunamadı.";
@@ -173,6 +174,15 @@ namespace DogusProject.Web.Areas.Author.Controllers
 			{
 				TempData["Error"] = "Blog bilgileri alınamadı.";
 				return RedirectToAction("Index");
+			}
+
+			var imageResponse = await _client.GetAsync($"blogimage/by-blog/{id}");
+			var imageList = new List<(Guid Id, string Url)>();
+			if (imageResponse.IsSuccessStatusCode)
+			{
+				var result = await imageResponse.Content.ReadFromJsonAsync<Result<List<BlogImageDto>>>();
+				if (result?.Success == true)
+					imageList = result.Data.Select(img => (img.Id, img.ImageUrl)).ToList();
 			}
 
 			var categoriesResponse = await _client.GetAsync("category");
@@ -189,7 +199,8 @@ namespace DogusProject.Web.Areas.Author.Controllers
 				CategoryId = blogResult.Data.CategoryId,
 				SelectedTagIds = blogResult.Data.TagIds,
 				Categories = categoryResult?.Data ?? new(),
-				AvailableTags = tagResult?.Data ?? new()
+				AvailableTags = tagResult?.Data ?? new(),
+				ExistingImages = imageList
 			};
 
 			return View(model);
@@ -199,8 +210,29 @@ namespace DogusProject.Web.Areas.Author.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Edit(Guid id, UpdateBlogViewModel model)
 		{
+
 			if (!ModelState.IsValid)
+			{
+				foreach (var kvp in ModelState)
+				{
+					foreach (var error in kvp.Value.Errors)
+					{
+						Console.WriteLine($"Hata: {kvp.Key} => {error.ErrorMessage}");
+					}
+				}
+			}
+
+			Console.WriteLine("Seçilen Tag Id'ler:");
+			foreach (var tag in model.SelectedTagIds)
+			{
+				Console.WriteLine(tag);
+			}
+
+			if (!ModelState.IsValid)
+			{
+				await PrepareViewModelAsync(model, id);
 				return View(model);
+			}
 
 			if (!string.IsNullOrWhiteSpace(model.NewTags))
 			{
@@ -229,14 +261,15 @@ namespace DogusProject.Web.Areas.Author.Controllers
 				Title = model.Title,
 				Content = model.Content,
 				CategoryId = model.CategoryId,
-				TagIds = model.SelectedTagIds
+				TagIds = model.SelectedTagIds.Distinct().ToList()
 			};
 
 			var response = await _client.PutAsJsonAsync("blog", dto);
 			if (!response.IsSuccessStatusCode)
 			{
+				await PrepareViewModelAsync(model, id);
 				ModelState.AddModelError(string.Empty, "Blog güncellenemedi.");
-				return HandleApiFailure("Blog güncellenemedi.", model);
+				return View(model);
 			}
 
 			if (model.Images != null && model.Images.Any())
@@ -257,7 +290,8 @@ namespace DogusProject.Web.Areas.Author.Controllers
 				}
 			}
 
-			return RedirectToAction("Index");
+			TempData["SuccessMessage"] = "Blog başarıyla güncellendi.";
+			return RedirectToAction("Edit", new { id });
 		}
 
 
@@ -290,6 +324,20 @@ namespace DogusProject.Web.Areas.Author.Controllers
 			return model;
 		}
 
+		private async Task PrepareViewModelAsync(UpdateBlogViewModel model, Guid blogId)
+		{
+			var categoriesResponse = await _client.GetAsync("category");
+			var tagsResponse = await _client.GetAsync("tag");
+			var imagesResponse = await _client.GetAsync($"blogimage/by-blog/{blogId}");
+
+			var categoryResult = await categoriesResponse.Content.ReadFromJsonAsync<Result<List<CategoryDto>>>();
+			var tagResult = await tagsResponse.Content.ReadFromJsonAsync<Result<List<TagDto>>>();
+			var imageResult = await imagesResponse.Content.ReadFromJsonAsync<Result<List<BlogImageDto>>>();
+
+			model.Categories = categoryResult?.Data ?? new();
+			model.AvailableTags = tagResult?.Data ?? new();
+			model.ExistingImages = imageResult?.Data?.Select(x => (x.Id, x.ImageUrl)).ToList() ?? new();
+		}
 	}
 
 }

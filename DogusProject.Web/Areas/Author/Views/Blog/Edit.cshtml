@@ -38,9 +38,14 @@
                     <div class="d-flex flex-wrap gap-2">
                         @foreach (var tag in Model.AvailableTags)
                         {
+                            var isChecked = Model.SelectedTagIds?.Contains(tag.Id) == true ? "checked" : "";
                             <div class="form-check me-3">
-                                <input class="form-check-input" type="checkbox" name="SelectedTagIds" value="@tag.Id"
-                                       id="tag_@tag.Id" @(Model.SelectedTagIds.Contains(tag.Id) ? "checked" : "") />
+                                <input type="checkbox"
+                                       class="form-check-input"
+                                       name="SelectedTagIds"
+                                       value="@tag.Id"
+                                       id="tag_@tag.Id"
+                                       @isChecked />
                                 <label class="form-check-label small text-muted" for="tag_@tag.Id">@tag.Name</label>
                             </div>
                         }
@@ -65,15 +70,12 @@
                         <div class="d-flex flex-wrap gap-3">
                             @foreach (var image in Model.ExistingImages)
                             {
-                                <div class="position-relative">
+                                <div class="position-relative" id="image-container-@image.Id">
                                     <img src="@image.Url" width="100" height="100" class="rounded border" style="object-fit: cover;" />
-                                    <form asp-area="Author" asp-controller="BlogImage" asp-action="Delete" method="post" class="position-absolute top-0 end-0">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="id" value="@image.Id" />
-                                        <button type="submit" class="btn btn-sm btn-danger rounded-circle" title="Sil">
-                                            <i class="bi bi-x"></i>
-                                        </button>
-                                    </form>
+                                    <button type="button" class="btn btn-sm btn-danger rounded-circle position-absolute top-0 end-0 delete-image-btn"
+                                            data-id="@image.Id" title="Sil">
+                                        <i class="bi bi-x"></i>
+                                    </button>
                                 </div>
                             }
                         </div>
@@ -119,4 +121,68 @@
             });
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.querySelectorAll('.delete-image-btn').forEach(button => {
+            button.addEventListener('click', async function () {
+                const imageId = this.dataset.id;
+                const container = document.getElementById(`image-container-${imageId}`);
+                if (!imageId) return;
+
+                const confirmed = await Swal.fire({
+                    title: 'Emin misiniz?',
+                    text: "Bu görseli silmek istediğinize emin misiniz?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Evet, sil!',
+                    cancelButtonText: 'İptal'
+                });
+
+                if (!confirmed.isConfirmed) return;
+
+                const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+                const response = await fetch('/author/blogimage/delete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `id=${imageId}&__RequestVerificationToken=${token}`
+                });
+
+                if (response.ok) {
+                    container.remove();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Silindi',
+                        text: 'Görsel başarıyla silindi.',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Hata',
+                        text: 'Görsel silinemedi.'
+                    });
+                }
+            });
+        });
+    </script>
+
+    @using System.Text.Encodings.Web
+    @if (TempData["SuccessMessage"] is string successMessage)
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Başarılı',
+                text: '@Html.Raw(JavaScriptEncoder.Default.Encode(successMessage))',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Tamam'
+            });
+        </script>
+    }
 }
