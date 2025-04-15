@@ -2,12 +2,6 @@
 
 DogusProject, ASP.NET Core MVC ile geliştirilmiş Clean Architecture yapısını benimseyen, kullanıcıların blog yazıları oluşturup yönetebildiği, yetkilendirme ve kimlik doğrulama sistemlerini içeren tam donanımlı bir web uygulamasıdır. 
 
-**Projenin MVC Linki**: https://dogusprojectweb20250414103240-c2b0dmgkd7dphbct.canadacentral-01.azurewebsites.net/
-
-**Projenin API Linki**: https://dogusprojectapi20250414000605-fjaxhfe9gvfcfdej.germanywestcentral-01.azurewebsites.net/swagger/index.html
-
-*Not: API güvenliği için bu aşamada herhangi bir önlem alınmamıştır.* 
-
 ## İçindekiler
 - [Proje Mimarisi](#proje-mimarisi)
 - [Katmanlar](#katmanlar)
@@ -24,7 +18,7 @@ Proje Clean Architecture prensiplerine uygun şekilde organize edilmiştir:
 - **SOLID** prensiplerine uygun
 - **CQRS** pattern kullanılmıştır
 - **Repository Pattern** ile veritabanı erişimi
-- **Dependency Injection** ile servis tüm katmanlarda ayrıstırılmıştır
+- **Dependency Injection** ile servis tüm katmanlarda ayrıştırılmıştır
 
 ## Katmanlar
 
@@ -74,7 +68,7 @@ F --> G[Yorum Ekle]
 ```bash
 git clone https://github.com/kullaniciadi/DogusProject.git
 ```
-2. Gerekli NuGet paketlerini yüklen:
+2. Gerekli NuGet paketlerini yükleyin:
 ```bash
 dotnet restore
 ```
